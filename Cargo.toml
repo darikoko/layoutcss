@@ -1,0 +1,20 @@
+[package]
+name = "layoutcss"
+version = "0.1.0"
+edition = "2021"
+authors = ["Loïc Cavinato loic@cavinato.fr"]
+license = "GPL-2.0-or-later"
+
+[dependencies]
+serde = { version = "1.0.215", features = ["derive"] }
+layoutcss-parser = "0.1.0"
+toml = "0.8.19"
+notify = "7.0.0"
+walkdir = "2.5.0"
+
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "fat"
+panic = "abort"

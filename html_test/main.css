@@ -1,0 +1,292 @@
+body {
+  background-color: rgb(36, 36, 36);
+  color: rgb(214, 212, 212);
+  display: flex;
+  flex-direction: column;
+  font-family: jet;
+}
+body > div:not(:nth-child(1), :nth-child(3)) {
+  margin-top: 150px;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+a {
+  all: unset;
+}
+
+.top {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  padding: 10px;
+  padding-inline: 20px;
+  background-color: rgb(50, 50, 50);
+  border-radius: 5px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.header > h1 {
+  font-size: 80px;
+  margin: 100px;
+}
+.header__index {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+}
+.header__index a::before {
+  content: "- ";
+}
+.header__index > * {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menu {
+  background-color: rgb(0, 0, 0);
+  border-radius: 5px;
+  padding: 10px;
+  width: fit-content;
+  position: sticky;
+  top: 50px;
+  left: 50px;
+  display: flex;
+  gap: 50px;
+}
+.menu::after {
+  content: "menu";
+}
+.menu > * {
+  display: none;
+  font-size: 15px;
+  color: rgb(229, 229, 229);
+}
+.menu input {
+  all: unset;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.components,
+.utilities {
+  display: flex;
+  gap: 50px;
+  flex-direction: column;
+  width: 100%;
+}
+.components > h2,
+.utilities > h2 {
+  margin-bottom: 50px;
+  font-size: 40px;
+}
+.components > div,
+.utilities > div {
+  background-color: rgb(31, 31, 31);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0px 2px 5px rgba(20, 20, 20, 0.71);
+  display: flex;
+  flex-direction: column;
+}
+.components > div h3,
+.utilities > div h3 {
+  margin: 10px;
+  font-size: 35px;
+}
+.components > div h4,
+.utilities > div h4 {
+  margin: 15px;
+  font-size: 20px;
+}
+
+.info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 25px;
+  width: 25px;
+  border-radius: 100%;
+  background-color: green;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  z-index: 999;
+}
+.info > * {
+  display: none;
+  font-size: 15px;
+  color: rgb(14, 14, 14);
+}
+.info p:first-of-type {
+  margin-top: 15px;
+  background-color: rgb(51, 51, 51);
+  align-self: center;
+  padding: 5px;
+  color: white;
+  border-radius: 5px;
+}
+.info p:first-of-type::before {
+  content: "<";
+}
+.info p:first-of-type::after {
+  content: ">";
+}
+.info__component {
+  color: rgb(190, 80, 190);
+}
+.info__layout {
+  color: rgb(104, 192, 104);
+}
+.info__attribute {
+  color: rgb(119, 119, 209);
+}
+.info input {
+  all: unset;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.info h3 {
+  font-size: 20px !important;
+  margin: 0 !important;
+  margin-top: 20px !important;
+}
+
+.info::after {
+  content: "?";
+  width: fit-content;
+}
+
+.info:has(input:checked) {
+  height: fit-content;
+  width: fit-content;
+  max-width: 700px;
+  padding: 25px;
+  border-radius: 10px;
+  background-color: rgb(223, 223, 223);
+  align-items: start;
+}
+.info:has(input:checked)::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+  width: 10px;
+  aspect-ratio: 1;
+  padding: 3px;
+  border-radius: 100%;
+  cursor: pointer;
+  pointer-events: none;
+  z-index: 99999;
+}
+.info:has(input:checked) > * {
+  display: block;
+}
+
+.menu:has(input:checked) {
+  height: fit-content;
+  width: fit-content;
+  max-width: 700px;
+  padding: 25px;
+  border-radius: 10px;
+  background-color: rgb(22, 22, 22);
+  align-items: start;
+  z-index: 99999;
+}
+.menu:has(input:checked) input {
+  top: 5px;
+  left: 5px;
+  right: auto;
+  bottom: auto;
+  width: 20px;
+  aspect-ratio: 1;
+}
+.menu:has(input:checked)::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: red;
+  width: 10px;
+  aspect-ratio: 1;
+  padding: 3px;
+  border-radius: 100%;
+  cursor: pointer;
+  pointer-events: none;
+  z-index: 99999;
+}
+.menu:has(input:checked) > * {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-box {
+  position: relative;
+  align-self: center;
+  width: 90%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: rgb(39, 39, 39);
+  padding: 35px;
+  border-radius: 10px;
+}
+
+.element-1 {
+  background-color: rgb(213, 78, 78);
+  border: solid 4px black;
+}
+
+.element-2 {
+  background-color: rgb(78, 159, 213);
+  border: solid 4px rgb(194, 193, 193);
+  min-height: 50px;
+}
+
+.element-3 {
+  background-color: rgb(106, 217, 112);
+  border: solid 4px rgb(99, 99, 99);
+  color: black;
+}
+
+.rectangle {
+  aspect-ratio: 1.5;
+}
+
+.small {
+  width: 50%;
+}
+
+.abs {
+  height: 100px;
+  width: 100px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.relative {
+  position: relative;
+}
+
+@font-face {
+  font-family: jet;
+  src: url(/public/font/JetBrainsMono-Medium.ttf);
+}
+
+/*# sourceMappingURL=main.css.map */

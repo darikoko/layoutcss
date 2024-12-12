@@ -1,0 +1,12 @@
+# Ignore all layout.css files to avoid testing on previous
+# css files and not the one freshly generated
+**/layout.css
+
+# Ignore the specific layout.toml file for the same reason
+layout.toml
+
+# Ignore the target folder and all its contents
+target/
+
+# MacOS metadata generated
+.DS_Store
