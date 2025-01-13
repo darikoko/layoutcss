@@ -137,9 +137,9 @@ dependencies = [
 
 [[package]]
 name = "layoutcss-parser"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1550e0d6dd0a7f7bdaf82e201255886217309df648f798994efdc01abfd4a711"
+checksum = "29e46dd4024b11a9cd439cbb64ac75309325323607ff627fa8a166e0938df053"
 dependencies = [
  "indoc",
  "serde",
