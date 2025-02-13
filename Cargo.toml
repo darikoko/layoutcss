@@ -1,6 +1,6 @@
 [package]
 name = "layoutcss"
-version = "0.1.10"
+version = "0.1.24"
 edition = "2021"
 description = "A CSS framework to build a responsive layout for your page."
 authors = ["Loïc Cavinato loic@cavinato.fr"]
@@ -8,7 +8,7 @@ license = "GPL-2.0-or-later"
 
 [dependencies]
 serde = { version = "1.0.215", features = ["derive"] }
-layoutcss-parser = "0.1.10"
+layoutcss-parser = "0.1.26"
 toml = "0.8.19"
 notify = "7.0.0"
 walkdir = "2.5.0"

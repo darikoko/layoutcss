@@ -31,10 +31,7 @@ impl LayoutConfig {
             },
             style: LayoutStyleConfig {
                 harmonic_ratio: 1.618,
-                min_screen: "600px".to_string(),
-                max_screen: "1200px".to_string(),
                 base_value: "16.5px".to_string(),
-                resizing_ratio: 1.1,
                 dev: true,
             },
             output: Output {
