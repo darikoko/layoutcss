@@ -39,7 +39,8 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -49,13 +50,21 @@ jobs:
       - name: Debug - List Downloaded Files
         run: ls -R artifacts
 
+      - name: Rename binaries for clarity
+        run: |
+          mkdir -p release
+          mv artifacts/layoutcss-binary-ubuntu-latest/layoutcss release/layoutcss-linux
+          mv artifacts/layoutcss-binary-macos-latest/layoutcss release/layoutcss-macos
+          mv artifacts/layoutcss-binary-windows-latest/layoutcss.exe release/layoutcss-windows.exe || true
+
       - name: Make binaries executable (Linux/macOS)
-        run: chmod +x artifacts/**/layoutcss* || true
+        run: chmod +x release/layoutcss-* || true
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: artifacts/**/*
+          files: release/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
