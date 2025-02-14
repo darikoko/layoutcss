@@ -1,10 +1,14 @@
-on: [push]
+on:
+  push:
+    tags:
+      - "v*"
 
 name: CI
 
 jobs:
   build:
     name: Rust project (${{ matrix.os }})
+    permissions: write-all
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
