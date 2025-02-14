@@ -32,5 +32,12 @@ jobs:
             target/release/layoutcss
             target/release/layoutcss.exe
 
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ matrix.os }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
