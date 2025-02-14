@@ -40,7 +40,7 @@ jobs:
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ matrix.os }}
+          files: layoutcss*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
