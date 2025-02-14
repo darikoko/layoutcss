@@ -33,13 +33,14 @@ jobs:
         with:
           name: layoutcss-binary-${{ matrix.os }}
           path: |
-            target/release/layoutcss
+            target/release/layoutcss*
             target/release/*.exe
 
   release:
     needs: build
-    permissions: write-all
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -49,13 +50,13 @@ jobs:
       - name: Debug - List Downloaded Files
         run: ls -R artifacts
 
+      - name: Make binaries executable (Linux/macOS)
+        run: chmod +x artifacts/**/layoutcss* || true
+
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: artifacts/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
 
