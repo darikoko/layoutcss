@@ -8,10 +8,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      
       - uses: actions-rs/cargo@v1
         with:
           command: build
           args: --release --all-features
+
+      # Upload the compiled binary as an artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: rust-binary
+          path: target/release/
+
+
