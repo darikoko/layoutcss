@@ -10,7 +10,8 @@ export enum State {
     AfterTagName = "AfterTagName",
     ReadingAttributeName = "ReadingAttributeName",
     WaitingAttributeValue = "WaitingAttributeValue",
-    ReadingAttributeValue = "ReadingAttributeValue"
+    ReadingAttributeValue = "ReadingAttributeValue",
+    ReadingJsxAttributeValue = "ReadingJsxAttributeValue"
 }
 
 export class Parser {
@@ -27,6 +28,7 @@ export class Parser {
     layoutBreakpointAttributeValueEnd: number | null = null;
     biggestBreakpoint: number = 0;
     biggestBreakpointValue: string = "";
+    curlyBracesCounter : number = 0;
 
     elements: Map<string, (Utility | Component)[]> = new Map();
 
@@ -74,6 +76,7 @@ export class Parser {
         this.layoutBreakpointAttributeValueEnd = null;
         this.biggestBreakpoint = 0;
         this.biggestBreakpointValue = "";
+        this.curlyBracesCounter = 0;
     }
 
 
@@ -103,10 +106,39 @@ export class Parser {
 
     }
 
+
+    transition(c: string): State {
+        if (this.state === State.Resting && c === '<') return State.InsideTag;
+        if (this.state === State.InsideTag && /[a-zA-Z]/.test(c)) return State.ReadingTagName;
+        if ((this.state === State.ReadingTagName || this.state === State.ReadingAttributeName) && /\s/.test(c)) return State.AfterTagName;
+        if (this.state === State.AfterTagName && /[a-zA-Z]/.test(c)) return State.ReadingAttributeName;
+        if (this.state === State.ReadingAttributeName && c === '=') return State.WaitingAttributeValue;
+        if (this.state === State.WaitingAttributeValue && c === '"') return State.ReadingAttributeValue;
+        if (this.state === State.WaitingAttributeValue && c === '{') {
+            this.curlyBracesCounter += 1;
+            return State.ReadingJsxAttributeValue
+        }
+        if (this.state === State.ReadingJsxAttributeValue && c === '{') {
+            this.curlyBracesCounter += 1;
+        }
+        if (this.state === State.ReadingJsxAttributeValue && c === '}') {
+            this.curlyBracesCounter -= 1;
+            if (this.curlyBracesCounter === 0){
+                return State.AfterTagName
+            }
+        }
+        if (this.state === State.WaitingAttributeValue && c !== '"') return State.AfterTagName;
+        if (this.state === State.ReadingAttributeValue && c === '"') return State.AfterTagName;
+        if ((this.state === State.AfterTagName || this.state === State.ReadingTagName || this.state === State.ReadingAttributeName) && c === '>') {
+            return State.Resting;
+        }
+        return this.state;
+    }
+
     parse(): void {
         for (let i = 0; i < this.text.length; i++) {
             const c = this.text[i];
-            const newState = transition(this.state, c);
+            const newState = this.transition(c);
             if (this.state === newState) continue;
 
             if (newState === State.ReadingTagName) {
@@ -126,7 +158,8 @@ export class Parser {
                 } else if (this.isLayoutBreakpointAttribute()) {
                     this.layoutBreakpointAttributeValueStart = i + 1;
                 }
-            } else if (this.state === State.ReadingAttributeValue && newState === State.AfterTagName) {
+            }
+            else if (this.state === State.ReadingAttributeValue && newState === State.AfterTagName) {
                 if (this.isLayoutAttribute()) {
                     this.layoutAttributeValueEnd = i - 1;
                 } else if (this.isLayoutBreakpointAttribute()) {
@@ -148,7 +181,7 @@ export class Parser {
                     this.addElements(elements)
                 }
                 // if we have a biggestBreakpoint, we need to generate elements
-                // for the component when SuperioTo, generate will ignore utilities in this case
+                // for the component when SuperiorTo, generate will ignore utilities in this case
                 if (this.biggestBreakpoint) {
                     const mq: MediaQuery = {
                         type: "SuperiorTo",
@@ -160,24 +193,10 @@ export class Parser {
                 }
                 this.resetIndexes();
             }
-
             this.state = newState;
         }
     }
 }
 
-export function transition(state: State, c: string): State {
-    if (state === State.Resting && c === '<') return State.InsideTag;
-    if (state === State.InsideTag && /[a-zA-Z]/.test(c)) return State.ReadingTagName;
-    if ((state === State.ReadingTagName || state === State.ReadingAttributeName) && /\s/.test(c)) return State.AfterTagName;
-    if (state === State.AfterTagName && /[a-zA-Z]/.test(c)) return State.ReadingAttributeName;
-    if (state === State.ReadingAttributeName && c === '=') return State.WaitingAttributeValue;
-    if (state === State.WaitingAttributeValue && c === '"') return State.ReadingAttributeValue;
-    if (state === State.WaitingAttributeValue && c !== '"') return State.AfterTagName;
-    if (state === State.ReadingAttributeValue && c === '"') return State.AfterTagName;
-    if ((state === State.AfterTagName || state === State.ReadingTagName || state === State.ReadingAttributeName) && c === '>') {
-        return State.Resting;
-    }
-    return state;
-}
+
 

@@ -14,12 +14,15 @@ const layoutConfigSchema = z.object({
     }),
     output: z.object({
         file: z.string(),
+        minify: z.boolean(),
     }),
 });
 
 export type LayoutConfig = z.infer<typeof layoutConfigSchema>;
 
-// Config par défaut
+/**
+ * Create a default config for layoutcss
+ **/
 function defaultLayoutConfig(): LayoutConfig {
     return {
         input: {
@@ -33,11 +36,15 @@ function defaultLayoutConfig(): LayoutConfig {
         },
         output: {
             file: "./layout.css",
+            minify: false
         },
     };
 }
 
-// Fonction de chargement avec fallback + création
+
+/**
+ * Load the layoutcss config file at ./layoutcss.json, or create a default one if it doesn't exist
+ **/
 export async function loadLayoutConfigFromJson(path = "./layoutcss.json"): Promise<LayoutConfig> {
     if (existsSync(path)) {
         try {

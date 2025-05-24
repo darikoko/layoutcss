@@ -1,10 +1,10 @@
 // tests/parser.test.ts
 import {describe, it, expect} from 'vitest';
-import {createUtility, generateElements} from '../src/generator';
-import {Utility} from "../src/utilities/utility";
+import {createUtility, generateCss, generateElements} from '../src/generator';
+import {transformChild, transformRecursive, Utility} from "../src/utilities/utility";
 import {Component} from "../src/components/component";
 import {Center} from "../src/components/center";
-import {generateCss, transformChild, transformRecursive} from "../src"; // adapte ce chemin si nécessaire
+// adapte ce chemin si nécessaire
 
 
 describe('recursive logic', () => {

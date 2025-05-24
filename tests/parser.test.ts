@@ -1,14 +1,15 @@
 // tests/parser.test.ts
-import { describe, it, expect } from 'vitest';
-import { Parser, State, transition } from '../src/parser'; // adapte ce chemin si nécessaire
+import { describe, it, expect, beforeEach } from 'vitest';
+import { Parser, State  } from '../src/parser'; // adapte ce chemin si nécessaire
 
 
 
 describe('Parser logic', () => {
     it('read jsx should works', () => {
-        const parser = new Parser('<div  layout="p:2" onclick={() => {console.log("bb")}}');
+        const parser = new Parser('<div  layout="p:2" onclick={() => {console.log("bb")}} layout400px="pt:3"');
         parser.parse();
         expect(parser.layoutAttributeValue()).toBe("p:2");
+        expect(parser.layoutBreakpointAttributeValue()).toBe("pt:3");
     });
     it('reset parser when new tag', () => {
         const parser = new Parser('<div layout="p:2"></div> <p layout="bonsoir"');
@@ -36,63 +37,85 @@ describe('Parser logic', () => {
     });
 });
 
+
 describe('State transitions', () => {
+    let parser: Parser;
+
+    beforeEach(() => {
+        parser = new Parser('');
+    });
+
     it('ReadingAttributeValue with non-" stays in same state', () => {
-        expect(transition(State.ReadingAttributeValue, 'i')).toBe(State.ReadingAttributeValue);
+        parser.state = State.ReadingAttributeValue;
+        expect(parser.transition('i')).toBe(State.ReadingAttributeValue);
     });
 
     it('ReadingTagName and ReadingAttributeName with alphabetic stay same', () => {
-        expect(transition(State.ReadingTagName, 'i')).toBe(State.ReadingTagName);
-        expect(transition(State.ReadingAttributeName, 'i')).toBe(State.ReadingAttributeName);
+        parser.state = State.ReadingTagName;
+        expect(parser.transition('i')).toBe(State.ReadingTagName);
+        parser.state = State.ReadingAttributeName;
+        expect(parser.transition('i')).toBe(State.ReadingAttributeName);
     });
 
     it('ReadingAttributeValue with " goes to AfterTagName', () => {
-        expect(transition(State.ReadingAttributeValue, '"')).toBe(State.AfterTagName);
+        parser.state = State.ReadingAttributeValue;
+        expect(parser.transition('"')).toBe(State.AfterTagName);
     });
 
     it('WaitingAttributeValue with " goes to ReadingAttributeValue', () => {
-        expect(transition(State.WaitingAttributeValue, '"')).toBe(State.ReadingAttributeValue);
+        parser.state = State.WaitingAttributeValue;
+        expect(parser.transition('"')).toBe(State.ReadingAttributeValue);
     });
 
     it('ReadingAttributeName with = goes to WaitingAttributeValue', () => {
-        expect(transition(State.ReadingAttributeName, '=')).toBe(State.WaitingAttributeValue);
+        parser.state = State.ReadingAttributeName;
+        expect(parser.transition('=')).toBe(State.WaitingAttributeValue);
     });
 
     it('ReadingAttributeName with > goes to Resting', () => {
-        expect(transition(State.ReadingAttributeName, '>')).toBe(State.Resting);
+        parser.state = State.ReadingAttributeName;
+        expect(parser.transition('>')).toBe(State.Resting);
     });
 
     it('ReadingTagName with > goes to Resting', () => {
-        expect(transition(State.ReadingTagName, '>')).toBe(State.Resting);
+        parser.state = State.ReadingTagName;
+        expect(parser.transition('>')).toBe(State.Resting);
     });
 
     it('Resting with < goes to InsideTag', () => {
-        expect(transition(State.Resting, '<')).toBe(State.InsideTag);
+        parser.state = State.Resting;
+        expect(parser.transition('<')).toBe(State.InsideTag);
     });
 
     it('Resting with a stays Resting', () => {
-        expect(transition(State.Resting, 'a')).toBe(State.Resting);
+        parser.state = State.Resting;
+        expect(parser.transition('a')).toBe(State.Resting);
     });
 
     it('InsideTag with alpha goes to ReadingTagName', () => {
-        expect(transition(State.InsideTag, 'd')).toBe(State.ReadingTagName);
+        parser.state = State.InsideTag;
+        expect(parser.transition('d')).toBe(State.ReadingTagName);
     });
 
     it('ReadingTagName with whitespace goes to AfterTagName', () => {
-        expect(transition(State.ReadingTagName, ' ')).toBe(State.AfterTagName);
-        expect(transition(State.ReadingTagName, '\n')).toBe(State.AfterTagName);
-        expect(transition(State.ReadingTagName, '\t')).toBe(State.AfterTagName);
+        parser.state = State.ReadingTagName;
+        expect(parser.transition(' ')).toBe(State.AfterTagName);
+        expect(parser.transition('\n')).toBe(State.AfterTagName);
+        expect(parser.transition('\t')).toBe(State.AfterTagName);
     });
 
     it('AfterTagName with alpha goes to ReadingAttributeName', () => {
-        expect(transition(State.AfterTagName, 'c')).toBe(State.ReadingAttributeName);
+        parser.state = State.AfterTagName;
+        expect(parser.transition('c')).toBe(State.ReadingAttributeName);
     });
 
     it('ReadingAttributeName with whitespace goes to AfterTagName', () => {
-        expect(transition(State.ReadingAttributeName, ' ')).toBe(State.AfterTagName);
+        parser.state = State.ReadingAttributeName;
+        expect(parser.transition(' ')).toBe(State.AfterTagName);
     });
 
     it('AfterTagName with > goes to Resting', () => {
-        expect(transition(State.AfterTagName, '>')).toBe(State.Resting);
+        parser.state = State.AfterTagName;
+        expect(parser.transition('>')).toBe(State.Resting);
     });
 });

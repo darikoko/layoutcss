@@ -64,13 +64,13 @@ const sliderHideBarStyle = `
 `;
 
 const sliderItemWidthStyle = (value: string) => `
-  slider-l[layout~="item-width:${value}"] > *:not(outsider-l[layout~="disinherit"]) {
+  slider-l[layout~="item-width:${value}"] > *:not([layout~="disinherit"]) {
     flex-basis: ${value};
   }
 `;
 
 const sliderHeightStyle = (value: string) => `
-  slider-l[layout~="height:${value}"] > *:not(outsider-l[layout~="disinherit"]) {
+  slider-l[layout~="height:${value}"] > *:not([layout~="disinherit"]) {
     block-size: ${value};
   }
 `;

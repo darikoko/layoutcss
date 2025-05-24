@@ -73,8 +73,8 @@ const switcherThresholdStyle = (value: string) => `
 `;
 
 const switcherLimitStyle = (value: string) => `
-  switcher-l[layout~="limit:${value}"] > :nth-last-child(n+${value}):not(outsider-l[layout~="disinherit"]),
-  switcher-l[layout~="limit:${value}"] > :nth-last-child(n+${value}) ~ *:not(outsider-l[layout~="disinherit"]) {
+  switcher-l[layout~="limit:${value}"] > :nth-last-child(n+${value}):not([layout~="disinherit"]),
+  switcher-l[layout~="limit:${value}"] > :nth-last-child(n+${value}) ~ *:not([layout~="disinherit"]) {
     flex-basis: 100%;
   }
 `;

@@ -10,9 +10,7 @@ import {Slider} from "./components/slider";
 import {Stack} from "./components/stack";
 import {Switcher} from "./components/switcher";
 
-import {MediaQuery} from "./media-query";
-
-import {Utility} from "./utilities/utility";
+import {transformChild, transformRecursive, Utility} from "./utilities/utility";
 import {AlignSelf} from "./utilities/align-self";
 import {BgImg} from "./utilities/bg-img";
 import {FlexBasis, FlexGrow, FlexShrink} from "./utilities/flex";
@@ -24,13 +22,23 @@ import {Absolute, Fixed, Relative, Sticky} from "./utilities/position";
 import {Ratio} from "./utilities/ratio";
 import {W} from "./utilities/w";
 import {Z} from "./utilities/z";
+import {cmpMediaQuery, MediaQuery} from "./media-query";
+import {readFileSync} from "fs";
+import {Area} from "./components/area";
+
+const RESET_CSS = readFileSync('./src/css/reset.css', {encoding: 'utf8'});
+export const DEV_CSS = readFileSync('./src/css/dev.css', {encoding: 'utf8'});
+
 
 export interface LayoutElementForCss {
-    mediaQuery?: MediaQuery,
+    mediaQuery: MediaQuery,
     elements: (Utility | Component)[]
 }
 
+type LayoutElementMap = Map<string, (Utility | Component)[]>;
+
 const componentMap: Record<string, new (...args: any[]) => any> = {
+    "area-l": Area,
     "box-l": Box,
     "center-l": Center,
     "extender-l": Extender,
@@ -69,12 +77,18 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "z": Z,
 };
 
-export function createComponent(tagName: string, layoutClasses: string[]) {
+/**
+ * Create a layoutcss Component from a tag-name and a list of layout classes
+ **/
+export function createComponent(tagName: string, layoutClasses: string[]): Component | undefined {
     const Cls = componentMap[tagName];
     if (!Cls) return undefined;
     return new Cls(layoutClasses);
 }
 
+/**
+ * Create a Utility from a layoutcss class
+ **/
 export function createUtility(layoutClass: string): Utility | undefined {
     const childIndex = layoutClass.indexOf("-child");
     const recursiveIndex = layoutClass.indexOf("-recursive");
@@ -100,6 +114,10 @@ export function createUtility(layoutClass: string): Utility | undefined {
 }
 
 
+
+/**
+ * Create an array of layoutcss elements (Utility & Component) from a tag-name, a layout attribute and media-query
+ **/
 export function generateElements(tagName: string, layoutAttributeValue: string, mediaQuery: MediaQuery): LayoutElementForCss {
     const layoutClasses = layoutAttributeValue.trim().split(/\s+/);
     const elements : (Utility | Component)[] = []
@@ -107,11 +125,11 @@ export function generateElements(tagName: string, layoutAttributeValue: string, 
     if (component){
         elements.push(component)
     }
-    // we dont want to add utility for superiorTo because its herited between breakpoint
+    // we dont want to add utility for superiorTo because its inherited between breakpoints
     if (mediaQuery.type=== "SuperiorTo"){
         return {mediaQuery: mediaQuery, elements: elements};
     }
-    // si on a un media query superieur on passe les utilities qui doivent être hérité
+    // if we have a InferiorOrEqualTo media-query we pass utilities which should be inherited
     for (const layoutClass of layoutClasses) {
         const utility = createUtility(layoutClass)
         if (utility) {
@@ -120,4 +138,51 @@ export function generateElements(tagName: string, layoutAttributeValue: string, 
     }
     return {mediaQuery: mediaQuery, elements: elements};
 
+}
+
+
+
+
+/**
+ * Create an array of layoutcss elements (Utility & Component) from a tag-name, a layout attribute and media-query
+ **/
+export function mergeMapsInPlace(target: LayoutElementMap, source: LayoutElementMap) {
+    for (const [key, value] of source) {
+        const existingKey = target.get(key);
+        if (existingKey) {
+            existingKey.push(...value);
+        } else {
+            target.set(key, value);
+        }
+    }
+}
+
+
+/**
+ * Generate Css from a layoutMap and a harmonic ratio
+ **/
+export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, harmonicRatio: number): string {
+    const sortedList = Array.from(layoutMap.entries()).map(([key, value]) => ({
+        mediaQuery: JSON.parse(key) as MediaQuery,
+        values: value
+    })).sort((a, b) => cmpMediaQuery(a.mediaQuery, b.mediaQuery));
+    let cssRules: string[] = [RESET_CSS]
+    for (const group of sortedList) {
+        let css: string[] = []
+        for (const layoutElement of group.values) {
+            css = layoutElement.getCss(harmonicRatio)
+            if (layoutElement instanceof Utility && layoutElement.child) {
+                css.map(transformChild)
+            } else if (layoutElement instanceof Utility && layoutElement.recursive) {
+                css.map(transformRecursive)
+            }
+        }
+        if (group.mediaQuery.type === "InferiorOrEqualTo") {
+            cssRules.push(`@media (width <= ${group.mediaQuery.size}px) { ${css.join('')} }`)
+        } else if (group.mediaQuery.type === "SuperiorTo") {
+            cssRules.push(`@media (width > ${group.mediaQuery.size}px) { ${css.join('')} }`)
+        }
+
+    }
+    return cssRules.join("\n")
 }
