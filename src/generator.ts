@@ -163,6 +163,7 @@ export function mergeMapsInPlace(target: LayoutElementMap, source: LayoutElement
  * Generate Css from a layoutMap and a harmonic ratio
  **/
 export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, harmonicRatio: number): string {
+    console.log(layoutMap)
     const sortedList = Array.from(layoutMap.entries()).map(([key, value]) => ({
         mediaQuery: JSON.parse(key) as MediaQuery,
         values: value
@@ -171,7 +172,7 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
     for (const group of sortedList) {
         let css: string[] = []
         for (const layoutElement of group.values) {
-            css = layoutElement.getCss(harmonicRatio)
+            css.push(...layoutElement.getCss(harmonicRatio))
             if (layoutElement instanceof Utility && layoutElement.child) {
                 css.map(transformChild)
             } else if (layoutElement instanceof Utility && layoutElement.recursive) {
