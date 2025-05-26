@@ -1,21 +1,25 @@
 {
   "name": "layoutcss",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "scripts": {
+    "dev": "ts-node src/index.ts",
     "build": "tsc",
     "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "layoutcss": "./dist/cli.js"
+    "layoutcss": "./dist/index.js"
   },
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/clean-css": "^4.2.11",
     "@types/csso": "^5.0.4",
     "@types/node": "^22.15.18",
     "typescript": "^5.0.0",
@@ -23,6 +27,7 @@
   },
   "dependencies": {
     "chokidar": "^4.0.3",
+    "clean-css": "^5.3.3",
     "csso": "^5.0.5",
     "zod": "^3.24.4"
   }

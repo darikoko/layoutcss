@@ -67,7 +67,7 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "pl": Pl,
     "pr": Pr,
     "px": Px,
-    "py":Py,
+    "py": Py,
     "absolute": Absolute,
     "sticky": Sticky,
     "fixed": Fixed,
@@ -101,18 +101,17 @@ export function createUtility(layoutClass: string): Utility | undefined {
     } else if (recursiveIndex !== -1) {
         utilityName = layoutClass.substring(0, recursiveIndex);
     } else {
-        utilityName = colonIndex !==-1 ? layoutClass.substring(0, colonIndex) : layoutClass;
+        utilityName = colonIndex !== -1 ? layoutClass.substring(0, colonIndex) : layoutClass;
     }
 
-    const utilityValue =  colonIndex !==-1 ? layoutClass.substring(colonIndex + 1) : undefined;
+    const utilityValue = colonIndex !== -1 ? layoutClass.substring(colonIndex + 1) : undefined;
 
     const Cls = utilityMap[utilityName];
     if (!Cls) return undefined;
-    const isChild =  childIndex !== -1;
-    const isRecursive =  recursiveIndex !== -1;
+    const isChild = childIndex !== -1;
+    const isRecursive = recursiveIndex !== -1;
     return new Cls(isChild, isRecursive, utilityValue);
 }
-
 
 
 /**
@@ -120,13 +119,13 @@ export function createUtility(layoutClass: string): Utility | undefined {
  **/
 export function generateElements(tagName: string, layoutAttributeValue: string, mediaQuery: MediaQuery): LayoutElementForCss {
     const layoutClasses = layoutAttributeValue.trim().split(/\s+/);
-    const elements : (Utility | Component)[] = []
-    let component = createComponent(tagName,layoutClasses)
-    if (component){
+    const elements: (Utility | Component)[] = []
+    let component = createComponent(tagName, layoutClasses)
+    if (component) {
         elements.push(component)
     }
     // we dont want to add utility for superiorTo because its inherited between breakpoints
-    if (mediaQuery.type=== "SuperiorTo"){
+    if (mediaQuery.type === "SuperiorTo") {
         return {mediaQuery: mediaQuery, elements: elements};
     }
     // if we have a InferiorOrEqualTo media-query we pass utilities which should be inherited
@@ -139,8 +138,6 @@ export function generateElements(tagName: string, layoutAttributeValue: string, 
     return {mediaQuery: mediaQuery, elements: elements};
 
 }
-
-
 
 
 /**
@@ -181,6 +178,9 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
             cssRules.push(`@media (width <= ${group.mediaQuery.size}px) { ${css.join('')} }`)
         } else if (group.mediaQuery.type === "SuperiorTo") {
             cssRules.push(`@media (width > ${group.mediaQuery.size}px) { ${css.join('')} }`)
+        }
+        else if (group.mediaQuery.type === "None") {
+            cssRules.push(css.join(''))
         }
 
     }

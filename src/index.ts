@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import {LayoutConfig, loadLayoutConfigFromJson} from "./config";
 import chokidar from "chokidar";
 import {readFile, statSync, writeFile} from 'fs';
@@ -80,6 +81,13 @@ async function main() {
 
 }
 
+/*
 main().catch(err => {
     console.error("❌ An error has happened", err);
 });
+*/
+
+// Exécuter main() seulement si le fichier est appelé directement
+if (require.main === module) {
+    main();
+}
