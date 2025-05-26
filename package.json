@@ -1,6 +1,6 @@
 {
   "name": "@nimbusteam/layoutcss",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/darikoko/layoutcss.git"
@@ -8,7 +8,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "build": "tsc",
+    "build": "tsc && cp -r src/css dist/css",
     "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
