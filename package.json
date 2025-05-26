@@ -1,6 +1,10 @@
 {
-  "name": "layoutcss",
+  "name": "@nimbusteam/layoutcss",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darikoko/layoutcss.git"
+  },
   "main": "./dist/index.js",
   "scripts": {
     "dev": "ts-node src/index.ts",

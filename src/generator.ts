@@ -25,9 +25,13 @@ import {Z} from "./utilities/z";
 import {cmpMediaQuery, MediaQuery} from "./media-query";
 import {readFileSync} from "fs";
 import {Area} from "./components/area";
+import path from 'path';
 
-const RESET_CSS = readFileSync('./src/css/reset.css', {encoding: 'utf8'});
-export const DEV_CSS = readFileSync('./src/css/dev.css', {encoding: 'utf8'});
+const resetCssPath = path.join(__dirname,  'css', 'reset.css');
+const devCssPath = path.join(__dirname,  'css', 'dev.css');
+
+const RESET_CSS = readFileSync(resetCssPath, {encoding: 'utf8'});
+export const DEV_CSS = readFileSync(devCssPath, {encoding: 'utf8'});
 
 
 export interface LayoutElementForCss {

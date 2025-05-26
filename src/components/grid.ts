@@ -15,7 +15,7 @@ export class Grid extends  Component{
     }
 
     getCss(harmonicRatio:number): string[] {
-        const css = [gridStyle];
+        let css = [gridStyle];
 
         if (this.gap) {
             const harmonicValue = getHarmonic(this.gap, harmonicRatio);
