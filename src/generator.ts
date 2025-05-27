@@ -194,22 +194,25 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
     })).sort((a, b) => cmpMediaQuery(a.mediaQuery, b.mediaQuery));
     let cssRules: string[] = [RESET_CSS]
     for (const group of sortedList) {
-        let css: string[] = []
+        // the css of all the media query
+        let mediaQueryCss: string[] = []
         for (const layoutElement of group.values) {
-            css.push(...layoutElement.getCss(harmonicRatio))
+            // the css of the current layout element
+            let layoutElementCss = layoutElement.getCss(harmonicRatio)
             if (layoutElement instanceof Utility && layoutElement.child) {
-                css.map(transformChild)
+                layoutElementCss = layoutElementCss.map(transformChild)
             } else if (layoutElement instanceof Utility && layoutElement.recursive) {
-                css.map(transformRecursive)
+                layoutElementCss = layoutElementCss.map(transformRecursive)
             }
+            mediaQueryCss.push(...layoutElementCss)
         }
         if (group.mediaQuery.type === "InferiorOrEqualTo") {
-            cssRules.push(`@media (width <= ${group.mediaQuery.size}px) { ${css.join('')} }`)
+            cssRules.push(`@media (width <= ${group.mediaQuery.size}px) { ${mediaQueryCss.join('')} }`)
         } else if (group.mediaQuery.type === "SuperiorTo") {
-            cssRules.push(`@media (width > ${group.mediaQuery.size}px) { ${css.join('')} }`)
+            cssRules.push(`@media (width > ${group.mediaQuery.size}px) { ${mediaQueryCss.join('')} }`)
         }
         else if (group.mediaQuery.type === "None") {
-            cssRules.push(css.join(''))
+            cssRules.push(mediaQueryCss.join(''))
         }
 
     }
