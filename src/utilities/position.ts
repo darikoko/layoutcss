@@ -65,3 +65,57 @@ const staticStyle = `
     position: static;
   }
 `;
+
+
+export class Top extends Utility {
+    getCss(harmonicRatio: number): string[] {
+        const harmonicValue = getHarmonic(this.value, harmonicRatio);
+        return [topStyle(this.value, harmonicValue)];
+    }
+}
+
+const topStyle = (value: string, harmonicValue: string) => `
+  [layout~="top:${value}"] {
+    top: ${harmonicValue};
+  }
+`;
+
+export class Bottom extends Utility {
+    getCss(harmonicRatio: number): string[] {
+        const harmonicValue = getHarmonic(this.value, harmonicRatio);
+        return [bottomStyle(this.value, harmonicValue)];
+    }
+}
+
+const bottomStyle = (value: string, harmonicValue: string) => `
+  [layout~="bottom:${value}"] {
+    bottom: ${harmonicValue};
+  }
+`;
+
+export class Left extends Utility {
+    getCss(harmonicRatio: number): string[] {
+        const harmonicValue = getHarmonic(this.value, harmonicRatio);
+        return [leftStyle(this.value, harmonicValue)];
+    }
+}
+
+const leftStyle = (value: string, harmonicValue: string) => `
+  [layout~="left:${value}"] {
+    left: ${harmonicValue};
+  }
+`;
+
+
+export class Right extends Utility {
+    getCss(harmonicRatio: number): string[] {
+        const harmonicValue = getHarmonic(this.value, harmonicRatio);
+        return [rightStyle(this.value, harmonicValue)];
+    }
+}
+
+const rightStyle = (value: string, harmonicValue: string) => `
+  [layout~="right:${value}"] {
+    right: ${harmonicValue};
+  }
+`;

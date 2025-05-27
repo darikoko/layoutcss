@@ -18,7 +18,7 @@ import {H} from "./utilities/h";
 import {HideOver, HideUnder} from "./utilities/hide";
 import {LineHeight} from "./utilities/line-height";
 import {P, Pb, Pl, Pr, Pt, Px, Py} from "./utilities/p";
-import {Absolute, Fixed, Relative, Sticky} from "./utilities/position";
+import {Absolute, Bottom, Fixed, Left, Relative, Right, Sticky, Top} from "./utilities/position";
 import {Ratio} from "./utilities/ratio";
 import {W} from "./utilities/w";
 import {Z} from "./utilities/z";
@@ -77,6 +77,10 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "fixed": Fixed,
     "relative": Relative,
     "ratio": Ratio,
+    "top": Top,
+    "bottom": Bottom,
+    "left": Left,
+    "right": Right,
     "w": W,
     "z": Z,
 };
