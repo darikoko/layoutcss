@@ -46,8 +46,8 @@ export class Sidebar extends  Component{
             const contentMinSelector = this.contentMin ? `[layout*="content-min:${this.contentMin}"]` : "";
 
             const selectorOne =
-                !this.side || this.side === "left" ? ":first-child" : ":last-child";
-            const selectorTwo = selectorOne === ":first-child" ? ":last-child" : ":first-child";
+                !this.side || this.side === "left" ? ":nth-child(1)" : ":nth-child(2)";
+            const selectorTwo = selectorOne === ":nth-child(1)" ? ":nth-child(2)" : ":nth-child(1)";
 
             const finalContentMin = this.contentMin || "50%";
             const finalSideWidth = this.sideWidth || "auto";
