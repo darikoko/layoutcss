@@ -1,3 +1,4 @@
+
 import { getHarmonic } from "../harmonic";
 import {Component} from "./component";
 
