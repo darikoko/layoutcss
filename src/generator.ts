@@ -147,16 +147,36 @@ export function generateElements(tagName: string, layoutAttributeValue: string, 
 /**
  * Create an array of layoutcss elements (Utility & Component) from a tag-name, a layout attribute and media-query
  **/
-export function mergeMapsInPlace(target: LayoutElementMap, source: LayoutElementMap) {
-    for (const [key, value] of source) {
-        const existingKey = target.get(key);
+export function mergeMapsInPlace(originalMap: LayoutElementMap, newMap: LayoutElementMap) {
+    for (const [key, value] of newMap) {
+        // we check if this media query key already exists in originalMap
+        let existingKey = originalMap.get(key);
+        // if the key exist, we merge the elements from the new media query and the original
+        // and then we removeDuplicates
         if (existingKey) {
-            existingKey.push(...value);
+            originalMap.set(key, removeDuplicates([...existingKey,...value]));
         } else {
-            target.set(key, value);
+            originalMap.set(key, removeDuplicates([...value]));
         }
     }
 }
+
+
+/**
+ * Check if 2 layout elements are the same based on their values
+ **/
+function shallowEqual(a: Utility | Component, b: Utility | Component) :boolean{
+    if (a.constructor !== b.constructor){
+        return false
+    }
+    const keys1 = Object.keys(a);
+    const keys2 = Object.keys(b);
+
+    if (keys1.length !== keys2.length) return false;
+
+    return keys1.every(key => b.hasOwnProperty(key) && (a as any)[key] === (b as any)[key]);
+}
+
 
 
 /**
@@ -190,4 +210,14 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
 
     }
     return cssRules.join("\n")
+}
+
+function removeDuplicates(list: (Utility | Component)[]): (Utility | Component)[] {
+    const result: (Utility | Component)[] = [];
+    for (const item of list) {
+        if (!result.some(existing => shallowEqual(existing, item))) {
+            result.push(item);
+        }
+    }
+    return result;
 }

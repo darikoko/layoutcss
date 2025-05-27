@@ -13,7 +13,7 @@ export class Slider extends Component{
     }
 
     getCss(harmonicRatio:number): string[] {
-        const css = [sliderStyle];
+        let css = [sliderStyle];
 
         if (this.hideBar) {
             css.push(sliderHideBarStyle);
@@ -45,7 +45,7 @@ const sliderStyle = `
     overflow-y: hidden;
   }
 
-  slider-l > *:not(outsider-l[layout~="disinherit"]) {
+  slider-l > *:not([layout~="disinherit"]) {
     flex-shrink: 0;
     flex-grow: 0;
     height: auto;

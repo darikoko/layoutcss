@@ -55,7 +55,7 @@ const switcherStyle = `
     flex-wrap: wrap;
   }
 
-  switcher-l > *:not(outsider-l[layout~="disinherit"]) {
+  switcher-l > *:not([layout~="disinherit"]) {
     flex-grow: 1;
   }
 `;
@@ -67,7 +67,7 @@ const switcherReverseStyle = `
 `;
 
 const switcherThresholdStyle = (value: string) => `
-  switcher-l[layout~="threshold:${value}"] > *:not(outsider-l[layout~="disinherit"]) {
+  switcher-l[layout~="threshold:${value}"] > *:not([layout~="disinherit"]) {
     flex-basis: calc((${value} - 100%) * 999);
   }
 `;

@@ -116,7 +116,7 @@ const sidebarGroupStyle = (
     sideWidth: string,
     contentMin: string
 ) => `
-  sidebar-l${sideSelector}${sideWidthSelector}${contentMinSelector} > ${selectorOne}:not(outsider-l[layout~="disinherit"]) {
+  sidebar-l${sideSelector}${sideWidthSelector}${contentMinSelector} > ${selectorOne}:not([layout~="disinherit"]) {
     flex-basis: ${sideWidth};
     flex-grow: 1;
     min-inline-size: initial;
@@ -124,7 +124,7 @@ const sidebarGroupStyle = (
     min-height: 0;
   }
 
-  sidebar-l${sideSelector}${sideWidthSelector}${contentMinSelector} > ${selectorTwo}:not(outsider-l[layout~="disinherit"]) {
+  sidebar-l${sideSelector}${sideWidthSelector}${contentMinSelector} > ${selectorTwo}:not([layout~="disinherit"]) {
     flex-basis: 0;
     flex-grow: 999;
     min-inline-size: ${contentMin};

@@ -175,11 +175,11 @@ export class Parser {
                     this.tagNameEnd = i - 1;
                 }
                 // here we generate the elements for the regular layout attribute,
+                // if there is one, (in some case we juste have <box-l>...</box-l> without layout attribute
                 // we do this when we leave the tag
-                if (this.layoutAttributeValue()) {
-                    const elements = generateElements(this.tagName(), this.layoutAttributeValue(), {type:"None"})
-                    this.addElements(elements)
-                }
+                const elements = generateElements(this.tagName(), this.layoutAttributeValue(), {type:"None"})
+                this.addElements(elements)
+
                 // if we have a biggestBreakpoint, we need to generate elements
                 // for the component when SuperiorTo, generate will ignore utilities in this case
                 if (this.biggestBreakpoint) {

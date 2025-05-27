@@ -37,13 +37,13 @@ const stackStyle = `
 `;
 
 const stackGapStyle = (value: string, harmonic: string) => `
-  stack-l[layout~="gap:${value}"] > * + *:not(outsider-l[layout~="disinherit"]) {
+  stack-l[layout~="gap:${value}"] > * + *:not([layout~="disinherit"]) {
     margin-block-start: ${harmonic};
   }
 `;
 
 const stackRecursiveStyle = (harmonic: string) => `
-  stack-l[layout~="recursive"] * + *:not(outsider-l[layout~="disinherit"]) {
+  stack-l[layout~="recursive"] * + *:not([layout~="disinherit"]) {
     margin-block-start: ${harmonic};
   }
 `;
