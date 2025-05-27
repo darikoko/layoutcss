@@ -25,6 +25,7 @@ import {Z} from "./utilities/z";
 import {cmpMediaQuery, MediaQuery} from "./media-query";
 import {readFileSync} from "fs";
 import {Area} from "./components/area";
+import {FontSize} from "./utilities/font-size";
 import path from 'path';
 
 const resetCssPath = path.join(__dirname,  'css', 'reset.css');
@@ -72,6 +73,7 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "pr": Pr,
     "px": Px,
     "py": Py,
+    "fz": FontSize,
     "absolute": Absolute,
     "sticky": Sticky,
     "fixed": Fixed,
