@@ -43,7 +43,7 @@ async function main() {
     const finalMap = new Map<string, (Utility | Component)[]>();
     let config = await loadLayoutConfigFromJson()
 
-    const watcher = chokidar.watch('./src', {
+    const watcher = chokidar.watch(config.input.directory, {
         persistent: true,
         ignored: (path) => {
             // if it's a folder, we don't want to ignore it
