@@ -49,6 +49,8 @@ export class Switcher extends Component{
     }
 }
 
+// flex-basis:0 on child allows images to no resize the flexbox but
+// behave like a div which takes the full width
 const switcherStyle = `
   switcher-l {
     display: flex;
@@ -57,6 +59,7 @@ const switcherStyle = `
 
   switcher-l > *:not([layout~="disinherit"]) {
     flex-grow: 1;
+    flex-basis:0;
   }
 `;
 
