@@ -1,17 +1,17 @@
 {
   "name": "@nimbusteam/layoutcss",
   "type": "module",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/darikoko/layoutcss.git"
   },
-  "main": "./dist/generator.js",
-  "types": "./dist/generator.d.ts",
+  "main": "./dist/lib.js",
+  "types": "./dist/lib.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/generator.js",
-      "types": "./dist/generator.d.ts"
+      "import": "./dist/lib.js",
+      "types": "./dist/lib.d.ts"
     }
   },
   "scripts": {
