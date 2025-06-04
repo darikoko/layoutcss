@@ -1408,25 +1408,6 @@ function generateElements(tagName, layoutAttributeValue, mediaQuery) {
   }
   return { mediaQuery, elements };
 }
-function mergeMapsInPlace(originalMap, newMap) {
-  for (const [key, value] of newMap) {
-    let existingKey = originalMap.get(key);
-    if (existingKey) {
-      originalMap.set(key, removeDuplicates([...existingKey, ...value]));
-    } else {
-      originalMap.set(key, removeDuplicates([...value]));
-    }
-  }
-}
-function shallowEqual(a, b) {
-  if (a.constructor !== b.constructor) {
-    return false;
-  }
-  const keys1 = Object.keys(a);
-  const keys2 = Object.keys(b);
-  if (keys1.length !== keys2.length) return false;
-  return keys1.every((key) => b.hasOwnProperty(key) && a[key] === b[key]);
-}
 function generateCss(layoutMap, harmonicRatio) {
   console.log(layoutMap);
   const sortedList = Array.from(layoutMap.entries()).map(([key, value]) => ({
@@ -1455,19 +1436,163 @@ function generateCss(layoutMap, harmonicRatio) {
   }
   return cssRules.join("\n");
 }
-function removeDuplicates(list) {
-  const result = [];
-  for (const item of list) {
-    if (!result.some((existing) => shallowEqual(existing, item))) {
-      result.push(item);
+
+// src/parser.ts
+var Parser = class {
+  state = "Resting" /* Resting */;
+  text;
+  tagNameStart = null;
+  tagNameEnd = null;
+  attributeNameStart = null;
+  attributeNameEnd = null;
+  layoutAttributeValueStart = null;
+  layoutAttributeValueEnd = null;
+  layoutBreakpointAttributeValueStart = null;
+  layoutBreakpointAttributeValueEnd = null;
+  biggestBreakpoint = 0;
+  biggestBreakpointValue = "";
+  curlyBracesCounter = 0;
+  elements = /* @__PURE__ */ new Map();
+  constructor(text) {
+    this.text = text;
+  }
+  sliceText(start, end) {
+    if (start === null || end === null || start > end) return "";
+    return this.text.slice(start, end + 1);
+  }
+  tagName() {
+    return this.sliceText(this.tagNameStart, this.tagNameEnd);
+  }
+  attributeName() {
+    return this.sliceText(this.attributeNameStart, this.attributeNameEnd);
+  }
+  isLayoutAttribute() {
+    return this.attributeName() === "layout";
+  }
+  isLayoutBreakpointAttribute() {
+    return this.attributeName().startsWith("layout");
+  }
+  layoutAttributeValue() {
+    return this.sliceText(this.layoutAttributeValueStart, this.layoutAttributeValueEnd);
+  }
+  layoutBreakpointAttributeValue() {
+    return this.sliceText(this.layoutBreakpointAttributeValueStart, this.layoutBreakpointAttributeValueEnd);
+  }
+  resetIndexes() {
+    this.tagNameStart = null;
+    this.tagNameEnd = null;
+    this.attributeNameStart = null;
+    this.attributeNameEnd = null;
+    this.layoutAttributeValueStart = null;
+    this.layoutAttributeValueEnd = null;
+    this.layoutBreakpointAttributeValueStart = null;
+    this.layoutBreakpointAttributeValueEnd = null;
+    this.biggestBreakpoint = 0;
+    this.biggestBreakpointValue = "";
+    this.curlyBracesCounter = 0;
+  }
+  updateBiggestBreakpoint(newBreakpoint) {
+    if (newBreakpoint <= this.biggestBreakpoint) return;
+    this.biggestBreakpoint = newBreakpoint;
+    this.biggestBreakpointValue = this.layoutBreakpointAttributeValue();
+  }
+  extractBreakpoint() {
+    const attributeName = this.attributeName();
+    if (attributeName.length < "layout".length + 3) return 0;
+    const slice = attributeName.slice(6, attributeName.length - 2);
+    const parsed = parseInt(slice, 10);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+  addElements(elementsInMediaQuery) {
+    if (elementsInMediaQuery.elements.length === 0) {
+      return;
+    }
+    const key = JSON.stringify(elementsInMediaQuery.mediaQuery);
+    if (this.elements.has(key)) {
+      this.elements.get(key).push(...elementsInMediaQuery.elements);
+    } else {
+      this.elements.set(key, [...elementsInMediaQuery.elements]);
     }
   }
-  return result;
-}
+  transition(c) {
+    if (this.state === "Resting" /* Resting */ && c === "<") return "InsideTag" /* InsideTag */;
+    if (this.state === "InsideTag" /* InsideTag */ && /[a-zA-Z]/.test(c)) return "ReadingTagName" /* ReadingTagName */;
+    if ((this.state === "ReadingTagName" /* ReadingTagName */ || this.state === "ReadingAttributeName" /* ReadingAttributeName */) && /\s/.test(c)) return "AfterTagName" /* AfterTagName */;
+    if (this.state === "AfterTagName" /* AfterTagName */ && /[a-zA-Z]/.test(c)) return "ReadingAttributeName" /* ReadingAttributeName */;
+    if (this.state === "ReadingAttributeName" /* ReadingAttributeName */ && c === "=") return "WaitingAttributeValue" /* WaitingAttributeValue */;
+    if (this.state === "WaitingAttributeValue" /* WaitingAttributeValue */ && c === '"') return "ReadingAttributeValue" /* ReadingAttributeValue */;
+    if (this.state === "WaitingAttributeValue" /* WaitingAttributeValue */ && c === "{") {
+      this.curlyBracesCounter += 1;
+      return "ReadingJsxAttributeValue" /* ReadingJsxAttributeValue */;
+    }
+    if (this.state === "ReadingJsxAttributeValue" /* ReadingJsxAttributeValue */ && c === "{") {
+      this.curlyBracesCounter += 1;
+    }
+    if (this.state === "ReadingJsxAttributeValue" /* ReadingJsxAttributeValue */ && c === "}") {
+      this.curlyBracesCounter -= 1;
+      if (this.curlyBracesCounter === 0) {
+        return "AfterTagName" /* AfterTagName */;
+      }
+    }
+    if (this.state === "WaitingAttributeValue" /* WaitingAttributeValue */ && c !== '"') return "AfterTagName" /* AfterTagName */;
+    if (this.state === "ReadingAttributeValue" /* ReadingAttributeValue */ && c === '"') return "AfterTagName" /* AfterTagName */;
+    if ((this.state === "AfterTagName" /* AfterTagName */ || this.state === "ReadingTagName" /* ReadingTagName */ || this.state === "ReadingAttributeName" /* ReadingAttributeName */) && c === ">") {
+      return "Resting" /* Resting */;
+    }
+    return this.state;
+  }
+  parse() {
+    for (let i = 0; i < this.text.length; i++) {
+      const c = this.text[i];
+      const newState = this.transition(c);
+      if (this.state === newState) continue;
+      if (newState === "ReadingTagName" /* ReadingTagName */) {
+        this.tagNameStart = i;
+      } else if (this.state === "ReadingTagName" /* ReadingTagName */ && newState === "AfterTagName" /* AfterTagName */) {
+        this.tagNameEnd = i - 1;
+      } else if (newState === "ReadingAttributeName" /* ReadingAttributeName */) {
+        this.attributeNameStart = i;
+      } else if (this.state === "ReadingAttributeName" /* ReadingAttributeName */ && newState === "WaitingAttributeValue" /* WaitingAttributeValue */) {
+        this.attributeNameEnd = i - 1;
+      } else if (newState === "ReadingAttributeValue" /* ReadingAttributeValue */) {
+        if (this.isLayoutAttribute()) {
+          this.layoutAttributeValueStart = i + 1;
+        } else if (this.isLayoutBreakpointAttribute()) {
+          this.layoutBreakpointAttributeValueStart = i + 1;
+        }
+      } else if (this.state === "ReadingAttributeValue" /* ReadingAttributeValue */ && newState === "AfterTagName" /* AfterTagName */) {
+        if (this.isLayoutAttribute()) {
+          this.layoutAttributeValueEnd = i - 1;
+        } else if (this.isLayoutBreakpointAttribute()) {
+          this.layoutBreakpointAttributeValueEnd = i - 1;
+          const bp = this.extractBreakpoint();
+          this.updateBiggestBreakpoint(bp);
+          const mq = { type: "InferiorOrEqualTo", size: bp };
+          const elements = generateElements(this.tagName(), this.layoutBreakpointAttributeValue(), mq);
+          this.addElements(elements);
+        }
+      } else if (newState === "Resting" /* Resting */) {
+        if (this.state === "ReadingTagName" /* ReadingTagName */) {
+          this.tagNameEnd = i - 1;
+        }
+        const elements = generateElements(this.tagName(), this.layoutAttributeValue(), { type: "None" });
+        this.addElements(elements);
+        if (this.biggestBreakpoint) {
+          const mq = {
+            type: "SuperiorTo",
+            size: this.biggestBreakpoint,
+            layoutAttributeValue: this.biggestBreakpointValue
+          };
+          const elements2 = generateElements(this.tagName(), this.layoutAttributeValue(), mq);
+          this.addElements(elements2);
+        }
+        this.resetIndexes();
+      }
+      this.state = newState;
+    }
+  }
+};
 export {
-  createComponent,
-  createUtility,
-  generateCss,
-  generateElements,
-  mergeMapsInPlace
+  Parser,
+  generateCss
 };

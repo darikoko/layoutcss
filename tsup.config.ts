@@ -13,7 +13,7 @@ export default defineConfig(
             },
         },
         {
-            entry: ['src/generator.ts'], // For browsers
+            entry: ['src/lib.ts'], // For browsers
             format: ['esm'],
             outDir: 'dist',
             dts: true,
