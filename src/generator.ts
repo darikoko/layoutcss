@@ -1,38 +1,40 @@
-import {Component} from "./components/component";
-import {Grid} from "./components/grid";
-import {Extender} from "./components/extender";
-import {Rack} from "./components/rack";
-import {Row} from "./components/row";
-import {Sidebar} from "./components/sidebar";
-import {Center} from "./components/center";
-import {Box} from "./components/box";
-import {Slider} from "./components/slider";
-import {Stack} from "./components/stack";
-import {Switcher} from "./components/switcher";
+import {Component} from "./components/component.js";
+import {Grid} from "./components/grid.js";
+import {Extender} from "./components/extender.js";
+import {Rack} from "./components/rack.js";
+import {Row} from "./components/row.js";
+import {Sidebar} from "./components/sidebar.js";
+import {Center} from "./components/center.js";
+import {Box} from "./components/box.js";
+import {Slider} from "./components/slider.js";
+import {Stack} from "./components/stack.js";
+import {Switcher} from "./components/switcher.js";
 
-import {transformChild, transformRecursive, Utility} from "./utilities/utility";
-import {AlignSelf} from "./utilities/align-self";
-import {BgImg} from "./utilities/bg-img";
-import {FlexBasis, FlexGrow, FlexShrink} from "./utilities/flex";
-import {H} from "./utilities/h";
-import {HideOver, HideUnder} from "./utilities/hide";
-import {LineHeight} from "./utilities/line-height";
-import {P, Pb, Pl, Pr, Pt, Px, Py} from "./utilities/p";
-import {Absolute, Bottom, Fixed, Left, Relative, Right, Sticky, Top} from "./utilities/position";
-import {Ratio} from "./utilities/ratio";
-import {W} from "./utilities/w";
-import {Z} from "./utilities/z";
-import {cmpMediaQuery, MediaQuery} from "./media-query";
+import {transformChild, transformRecursive, Utility} from "./utilities/utility.js";
+import {AlignSelf} from "./utilities/align-self.js";
+import {BgImg} from "./utilities/bg-img.js";
+import {FlexBasis, FlexGrow, FlexShrink} from "./utilities/flex.js";
+import {H} from "./utilities/h.js";
+import {HideOver, HideUnder} from "./utilities/hide.js";
+import {LineHeight} from "./utilities/line-height.js";
+import {P, Pb, Pl, Pr, Pt, Px, Py} from "./utilities/p.js";
+import {Absolute, Bottom, Fixed, Left, Relative, Right, Sticky, Top} from "./utilities/position.js";
+import {Ratio} from "./utilities/ratio.js";
+import {W} from "./utilities/w.js";
+import {Z} from "./utilities/z.js";
+import {cmpMediaQuery, MediaQuery} from "./media-query.js";
 import {readFileSync} from "fs";
-import {Area} from "./components/area";
-import {FontSize} from "./utilities/font-size";
+import {Area} from "./components/area.js";
+import {FontSize} from "./utilities/font-size.js";
 import path from 'path';
+import { fileURLToPath } from 'url'
+import fs from 'fs'
 
-const resetCssPath = path.join(__dirname,  'css', 'reset.css');
-const devCssPath = path.join(__dirname,  'css', 'dev.css');
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-const RESET_CSS = readFileSync(resetCssPath, {encoding: 'utf8'});
-export const DEV_CSS = readFileSync(devCssPath, {encoding: 'utf8'});
+const RESET_CSS = fs.readFileSync(path.join(__dirname, 'css', 'reset.css'), 'utf-8')
+export const DEV_CSS = fs.readFileSync(path.join(__dirname, 'css', 'reset.css'), 'utf-8')
 
 
 export interface LayoutElementForCss {

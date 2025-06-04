@@ -1,5 +1,5 @@
-import {getHarmonic} from "../harmonic";
-import {Component} from "./component";
+import {getHarmonic} from "../harmonic.js";
+import {Component} from "./component.js";
 
 export class Slider extends Component{
     hideBar: boolean = false;

@@ -3,6 +3,7 @@
     "target": "es2022",
     "module": "nodenext",
     "moduleResolution": "nodenext",
+    "moduleDetection": "force",
     "outDir": "./dist",
     "rootDir": "./src",
     "esModuleInterop": true,

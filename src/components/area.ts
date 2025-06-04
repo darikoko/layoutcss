@@ -1,6 +1,6 @@
-import { getHarmonic } from "../harmonic";
+import { getHarmonic } from "../harmonic.js";
 
-import { Component } from "./component";
+import { Component } from "./component.js";
 
 export class Area extends Component {
     template: string = "";

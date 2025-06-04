@@ -1,13 +1,21 @@
 {
   "name": "@nimbusteam/layoutcss",
-  "version": "1.0.16",
+  "type": "module",
+  "version": "1.0.17",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/darikoko/layoutcss.git"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/generator.js",
+  "types": "./dist/generator.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/generator.js",
+      "types": "./dist/generator.d.ts"
+    }
+  },
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "tsx src/index.ts",
     "build": "tsup && rm -rf dist/css && cp -r src/css dist/css",
     "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -27,8 +35,11 @@
     "@types/clean-css": "^4.2.11",
     "@types/csso": "^5.0.4",
     "@types/node": "^22.15.18",
+    "eslint-plugin-import": "^2.31.0",
     "tsup": "^8.5.0",
+    "tsx": "^4.19.4",
     "typescript": "^5.0.0",
+    "vite": "^6.3.5",
     "vitest": "^3.1.3"
   },
   "dependencies": {

@@ -1,7 +1,7 @@
-import { generateElements, LayoutElementForCss } from "./generator";
-import {Component} from "./components/component";
-import {Utility} from "./utilities/utility";
-import {MediaQuery} from "./media-query";
+import { generateElements, LayoutElementForCss } from "./generator.js";
+import {Component} from "./components/component.js";
+import {Utility} from "./utilities/utility.js";
+import {MediaQuery} from "./media-query.js";
 
 export enum State {
     Resting = "Resting",

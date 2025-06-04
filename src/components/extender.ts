@@ -1,4 +1,4 @@
-import {Component} from "./component";
+import {Component} from "./component.js";
 
 export class Extender extends  Component{
     screen: boolean = false

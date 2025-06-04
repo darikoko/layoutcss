@@ -1,4 +1,4 @@
-import { getHarmonic } from "../harmonic";
+import { getHarmonic } from "../harmonic.js";
 import {Utility} from "./utility";
 
 export class LineHeight extends Utility {

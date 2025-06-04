@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import {LayoutConfig, loadLayoutConfigFromJson} from "./config";
+import {LayoutConfig, loadLayoutConfigFromJson} from "./config.js";
 import chokidar from "chokidar";
 import {readFile, statSync, writeFile} from 'fs';
-import {Parser} from "./parser";
-import {Component} from "./components/component";
-import {Utility} from "./utilities/utility";
-import {DEV_CSS, generateCss, mergeMapsInPlace} from "./generator";
+import {Parser} from "./parser.js";
+import {Component} from "./components/component.js";
+import {Utility} from "./utilities/utility.js";
+import {DEV_CSS, generateCss, mergeMapsInPlace} from "./generator.js";
 
 
 
@@ -81,13 +81,4 @@ async function main() {
 
 }
 
-/*
-main().catch(err => {
-    console.error("❌ An error has happened", err);
-});
-*/
-
-// Exécuter main() seulement si le fichier est appelé directement
-if (require.main === module) {
-    main();
-}
+main();
