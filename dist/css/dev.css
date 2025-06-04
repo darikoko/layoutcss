@@ -1,0 +1,44 @@
+area-l,
+center-l,
+box-l,
+extender-l,
+grid-l,
+icon-l,
+row-l,
+rack-l,
+sidebar-l,
+slider-l,
+stack-l,
+switcher-l,
+ol,
+ul,
+dl,
+div,
+section,
+article,
+header,
+footer,
+main,
+nav,
+aside,
+figure,
+details,
+input,
+button,
+textarea,
+select,
+form,
+img {
+    outline: 2px solid black;
+}
+
+button,
+input,
+textarea,
+select {
+    background-color: gray;
+}
+
+img:not([src]), img[src=""] {
+    background: #bababa;
+}
