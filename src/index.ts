@@ -5,9 +5,8 @@ import {readFile, statSync, writeFile} from 'fs';
 import {Parser} from "./parser.js";
 import {Component} from "./components/component.js";
 import {Utility} from "./utilities/utility.js";
-import {DEV_CSS, generateCss, mergeMapsInPlace} from "./generator.js";
-
-
+import DEV_CSS from './css/dev.css'
+import {generateCss, mergeMapsInPlace} from "./generator.js";
 
 
 function cssProcess(path: string, finalMap: Map<string, (Utility | Component)[]>, config: LayoutConfig) {

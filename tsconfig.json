@@ -13,6 +13,6 @@
     "declaration": true,
     "declarationDir": "./dist"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/css/css.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

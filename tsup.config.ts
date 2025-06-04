@@ -7,14 +7,20 @@ export default defineConfig(
             format: ['esm'],
             outDir: 'dist',
             dts: false,
-            clean: true
+            clean: true,
+            loader: {
+                '.css': 'text',
+            },
         },
         {
             entry: ['src/generator.ts'], // For browsers
             format: ['esm'],
             outDir: 'dist',
             dts: true,
-            clean: false
+            clean: false,
+            loader: {
+                '.css': 'text',
+            },
         }
     ]
 )

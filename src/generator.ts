@@ -30,11 +30,14 @@ import path from 'path';
 import { fileURLToPath } from 'url'
 import fs from 'fs'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import RESET_CSS from './css/reset.css'
 
-const RESET_CSS = fs.readFileSync(path.join(__dirname, 'css', 'reset.css'), 'utf-8')
-export const DEV_CSS = fs.readFileSync(path.join(__dirname, 'css', 'reset.css'), 'utf-8')
+
+//const __filename = fileURLToPath(import.meta.url)
+//const __dirname = path.dirname(__filename)
+
+//const RESET_CSS = fs.readFileSync(path.join(__dirname, 'css', 'reset.css'), 'utf-8')
+//export const DEV_CSS = fs.readFileSync(path.join(__dirname, 'css', 'reset.css'), 'utf-8')
 
 
 export interface LayoutElementForCss {
