@@ -1162,11 +1162,11 @@ var wStyle2 = (value) => `
 function cmpMediaQuery(a, b) {
   const getPriority = (mq) => {
     switch (mq.type) {
-      case "SuperiorTo":
-        return 0;
-      case "InferiorOrEqualTo":
-        return 1;
       case "None":
+        return 0;
+      case "SuperiorTo":
+        return 1;
+      case "InferiorOrEqualTo":
         return 2;
     }
   };
