@@ -84,6 +84,7 @@ export class Parser {
         if (newBreakpoint <= this.biggestBreakpoint) return;
         this.biggestBreakpoint = newBreakpoint;
         this.biggestBreakpointValue = this.layoutBreakpointAttributeValue();
+        console.log("DDDDDDDa", newBreakpoint, this.biggestBreakpointValue);
     }
 
     extractBreakpoint(): number {
@@ -168,7 +169,7 @@ export class Parser {
                     const bp = this.extractBreakpoint();
                     this.updateBiggestBreakpoint(bp);
                     const mq: MediaQuery = {type: "InferiorOrEqualTo", size: bp}
-                    const elements = generateElements(this.tagName(), this.layoutBreakpointAttributeValue(), mq)
+                    const elements = generateElements(this.tagName(), this.layoutBreakpointAttributeValue(), mq, false)
                     this.addElements(elements)
                 }
             } else if (newState === State.Resting) {
@@ -177,10 +178,11 @@ export class Parser {
                 }
                 // here we generate the elements for the regular layout attribute,
                 // if there is one, (in some case we juste have <box-l>...</box-l> without layout attribute)
-                // if we have a layout attribute, the element has already been created when leaving the layout attribute
-                console.log(this.layoutAttributeValue(), "dfffff", this.tagName())
-                    const elements = generateElements(this.tagName(), this.layoutAttributeValue(), {type:"None"})
-                    this.addElements(elements)
+                // we check here if we have a biggest breakpoint because if it's the case we dont want to
+                // add the component to the None MediaQuery but we want it only in InferiorTo or SuperiorOrEqualTo
+                const hasBiggestBreakpoint = this.biggestBreakpoint > 0;
+                const elements = generateElements(this.tagName(), this.layoutAttributeValue(), {type:"None"}, hasBiggestBreakpoint)
+                this.addElements(elements)
 
                 // if we have a biggestBreakpoint, we need to generate elements
                 // for the component when SuperiorTo, generate will ignore utilities in this case
@@ -190,7 +192,7 @@ export class Parser {
                         size: this.biggestBreakpoint,
                         layoutAttributeValue: this.biggestBreakpointValue
                     };
-                    const elements = generateElements(this.tagName(), this.layoutAttributeValue(), mq)
+                    const elements = generateElements(this.tagName(), this.layoutAttributeValue(), mq, false)
                     this.addElements(elements)
                 }
                 this.resetIndexes();

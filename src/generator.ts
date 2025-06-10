@@ -123,11 +123,14 @@ export function createUtility(layoutClass: string): Utility | undefined {
 /**
  * Create an array of layoutcss elements (Utility & Component) from a tag-name, a layout attribute and media-query
  **/
-export function generateElements(tagName: string, layoutAttributeValue: string, mediaQuery: MediaQuery): LayoutElementForCss {
+export function generateElements(tagName: string, layoutAttributeValue: string, mediaQuery: MediaQuery, hasBiggestBreakpoint:boolean): LayoutElementForCss {
     const layoutClasses = layoutAttributeValue.trim().split(/\s+/);
     const elements: (Utility | Component)[] = []
     let component = createComponent(tagName, layoutClasses)
-    if (component) {
+    // if we are in the None MediaQuery and the component has a Biggest Breakpoint we dont want
+    // to add it to the None MediaQuery, we only want it into SuperiorTo and InferiorOrEqualTo
+    if (component && !(mediaQuery.type=== "None" && hasBiggestBreakpoint)) {
+        console.log("BOUUUUUUm", component, hasBiggestBreakpoint);
         elements.push(component)
     }
     // we dont want to add utility for superiorTo because its inherited between breakpoints
@@ -202,6 +205,9 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
                 layoutElementCss = layoutElementCss.map(transformChild)
             } else if (layoutElement instanceof Utility && layoutElement.recursive) {
                 layoutElementCss = layoutElementCss.map(transformRecursive)
+            }
+            else if (layoutElement instanceof Component && mediaQuery.type === "SuperiorTo") {
+                layoutElementCss = layoutElementCss.map(css => css.replace("-l", `-l[layout${mediaQuery.size}px="${mediaQuery.layoutAttributeValue}"]`))
             }
             mediaQueryCss.push(...layoutElementCss)
         }

@@ -1,22 +1,3 @@
-// src/harmonic.ts
-function isStrictNumber(value) {
-  const n = parseFloat(value);
-  return !isNaN(n) && n.toString() === value;
-}
-function getHarmonic(value, harmonic) {
-  if (value.startsWith("--")) {
-    return `var(${value})`;
-  }
-  if (value === "none") {
-    return "0px";
-  }
-  if (isStrictNumber(value)) {
-    const computed = Math.pow(harmonic, parseFloat(value));
-    return `${computed.toFixed(5)}rem`;
-  }
-  return value;
-}
-
 // src/components/component.ts
 var Component = class {
   setComponent(layoutClasses) {
@@ -41,6 +22,25 @@ var Component = class {
     return "";
   }
 };
+
+// src/harmonic.ts
+function isStrictNumber(value) {
+  const n = parseFloat(value);
+  return !isNaN(n) && n.toString() === value;
+}
+function getHarmonic(value, harmonic) {
+  if (value.startsWith("--")) {
+    return `var(${value})`;
+  }
+  if (value === "none") {
+    return "0px";
+  }
+  if (isStrictNumber(value)) {
+    const computed = Math.pow(harmonic, parseFloat(value));
+    return `${computed.toFixed(5)}rem`;
+  }
+  return value;
+}
 
 // src/components/grid.ts
 var Grid = class extends Component {
@@ -1403,11 +1403,12 @@ function createUtility(layoutClass) {
   const isRecursive = recursiveIndex !== -1;
   return new Cls(isChild, isRecursive, utilityValue);
 }
-function generateElements(tagName, layoutAttributeValue, mediaQuery) {
+function generateElements(tagName, layoutAttributeValue, mediaQuery, hasBiggestBreakpoint) {
   const layoutClasses = layoutAttributeValue.trim().split(/\s+/);
   const elements = [];
   let component = createComponent(tagName, layoutClasses);
-  if (component) {
+  if (component && !(mediaQuery.type === "None" && hasBiggestBreakpoint)) {
+    console.log("BOUUUUUUm", component, hasBiggestBreakpoint);
     elements.push(component);
   }
   if (mediaQuery.type === "SuperiorTo") {
@@ -1437,6 +1438,8 @@ function generateCss(layoutMap, harmonicRatio) {
         layoutElementCss = layoutElementCss.map(transformChild);
       } else if (layoutElement instanceof Utility && layoutElement.recursive) {
         layoutElementCss = layoutElementCss.map(transformRecursive);
+      } else if (layoutElement instanceof Component && mediaQuery.type === "SuperiorTo") {
+        layoutElementCss = layoutElementCss.map((css) => css.replace("-l", `-l[layout${mediaQuery.size}px="${mediaQuery.layoutAttributeValue}"]`));
       }
       mediaQueryCss.push(...layoutElementCss);
     }
@@ -1510,6 +1513,7 @@ var Parser = class {
     if (newBreakpoint <= this.biggestBreakpoint) return;
     this.biggestBreakpoint = newBreakpoint;
     this.biggestBreakpointValue = this.layoutBreakpointAttributeValue();
+    console.log("DDDDDDDa", newBreakpoint, this.biggestBreakpointValue);
   }
   extractBreakpoint() {
     const attributeName = this.attributeName();
@@ -1584,15 +1588,15 @@ var Parser = class {
           const bp = this.extractBreakpoint();
           this.updateBiggestBreakpoint(bp);
           const mq = { type: "InferiorOrEqualTo", size: bp };
-          const elements = generateElements(this.tagName(), this.layoutBreakpointAttributeValue(), mq);
+          const elements = generateElements(this.tagName(), this.layoutBreakpointAttributeValue(), mq, false);
           this.addElements(elements);
         }
       } else if (newState === "Resting" /* Resting */) {
         if (this.state === "ReadingTagName" /* ReadingTagName */) {
           this.tagNameEnd = i - 1;
         }
-        console.log(this.layoutAttributeValue(), "dfffff", this.tagName());
-        const elements = generateElements(this.tagName(), this.layoutAttributeValue(), { type: "None" });
+        const hasBiggestBreakpoint = this.biggestBreakpoint > 0;
+        const elements = generateElements(this.tagName(), this.layoutAttributeValue(), { type: "None" }, hasBiggestBreakpoint);
         this.addElements(elements);
         if (this.biggestBreakpoint) {
           const mq = {
@@ -1600,7 +1604,7 @@ var Parser = class {
             size: this.biggestBreakpoint,
             layoutAttributeValue: this.biggestBreakpointValue
           };
-          const elements2 = generateElements(this.tagName(), this.layoutAttributeValue(), mq);
+          const elements2 = generateElements(this.tagName(), this.layoutAttributeValue(), mq, false);
           this.addElements(elements2);
         }
         this.resetIndexes();
