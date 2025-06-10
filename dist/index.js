@@ -1231,8 +1231,21 @@ var wStyle2 = (value) => `
 
 // src/media-query.ts
 function cmpMediaQuery(a, b) {
-  if (a.type === "SuperiorTo" && b.type === "InferiorOrEqualTo" || a.type === "None" && b.type !== "None") return -1;
-  if (a.type === "InferiorOrEqualTo" && b.type === "SuperiorTo" || b.type === "None" && a.type !== "None") return 1;
+  const getPriority = (mq) => {
+    switch (mq.type) {
+      case "SuperiorTo":
+        return 0;
+      case "InferiorOrEqualTo":
+        return 1;
+      case "None":
+        return 2;
+    }
+  };
+  const priorityA = getPriority(a);
+  const priorityB = getPriority(b);
+  if (priorityA !== priorityB) {
+    return priorityA - priorityB;
+  }
   if (a.type !== "None" && b.type !== "None") {
     return b.size - a.size;
   }
