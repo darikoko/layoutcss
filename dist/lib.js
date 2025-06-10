@@ -8,7 +8,7 @@ function getHarmonic(value, harmonic) {
     return `var(${value})`;
   }
   if (value === "none") {
-    return "0.0";
+    return "0px";
   }
   if (isStrictNumber(value)) {
     const computed = Math.pow(harmonic, parseFloat(value));
@@ -1160,8 +1160,8 @@ var wStyle2 = (value) => `
 
 // src/media-query.ts
 function cmpMediaQuery(a, b) {
-  if (a.type === "SuperiorTo" && b.type === "InferiorOrEqualTo" || a.type === "None" && b.type !== "None") return 1;
-  if (a.type === "InferiorOrEqualTo" && b.type === "SuperiorTo" || b.type === "None" && a.type !== "None") return -1;
+  if (a.type === "SuperiorTo" && b.type === "InferiorOrEqualTo" || a.type === "None" && b.type !== "None") return -1;
+  if (a.type === "InferiorOrEqualTo" && b.type === "SuperiorTo" || b.type === "None" && a.type !== "None") return 1;
   if (a.type !== "None" && b.type !== "None") {
     return b.size - a.size;
   }
@@ -1416,6 +1416,7 @@ function generateCss(layoutMap, harmonicRatio) {
   })).sort((a, b) => cmpMediaQuery(a.mediaQuery, b.mediaQuery));
   let cssRules = [reset_default];
   for (const group of sortedList) {
+    const mediaQuery = group.mediaQuery;
     let mediaQueryCss = [];
     for (const layoutElement of group.values) {
       let layoutElementCss = layoutElement.getCss(harmonicRatio);
@@ -1426,14 +1427,16 @@ function generateCss(layoutMap, harmonicRatio) {
       }
       mediaQueryCss.push(...layoutElementCss);
     }
-    if (group.mediaQuery.type === "InferiorOrEqualTo") {
-      cssRules.push(`@media (width <= ${group.mediaQuery.size}px) { ${mediaQueryCss.join("")} }`);
-    } else if (group.mediaQuery.type === "SuperiorTo") {
-      cssRules.push(`@media (width > ${group.mediaQuery.size}px) { ${mediaQueryCss.join("")} }`);
+    if (mediaQuery.type === "InferiorOrEqualTo") {
+      const replacedMediaQueryCss = mediaQueryCss.map((css) => css.replace("layout", `layout${mediaQuery.size}px`));
+      cssRules.push(`@media (width <= ${mediaQuery.size}px) { ${replacedMediaQueryCss.join("")} }`);
+    } else if (mediaQuery.type === "SuperiorTo") {
+      cssRules.push(`@media (width > ${mediaQuery.size}px) { ${mediaQueryCss.join("")} }`);
     } else if (group.mediaQuery.type === "None") {
       cssRules.push(mediaQueryCss.join(""));
     }
   }
+  console.log(cssRules.join(""));
   return cssRules.join("\n");
 }
 

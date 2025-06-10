@@ -23,21 +23,12 @@ import {Ratio} from "./utilities/ratio.js";
 import {W} from "./utilities/w.js";
 import {Z} from "./utilities/z.js";
 import {cmpMediaQuery, MediaQuery} from "./media-query.js";
-import {readFileSync} from "fs";
 import {Area} from "./components/area.js";
 import {FontSize} from "./utilities/font-size.js";
-import path from 'path';
-import { fileURLToPath } from 'url'
-import fs from 'fs'
 
 import RESET_CSS from './css/reset.css'
 
 
-//const __filename = fileURLToPath(import.meta.url)
-//const __dirname = path.dirname(__filename)
-
-//const RESET_CSS = fs.readFileSync(path.join(__dirname, 'css', 'reset.css'), 'utf-8')
-//export const DEV_CSS = fs.readFileSync(path.join(__dirname, 'css', 'reset.css'), 'utf-8')
 
 
 export interface LayoutElementForCss {
@@ -201,6 +192,7 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
     })).sort((a, b) => cmpMediaQuery(a.mediaQuery, b.mediaQuery));
     let cssRules: string[] = [RESET_CSS]
     for (const group of sortedList) {
+        const mediaQuery = group.mediaQuery;
         // the css of all the media query
         let mediaQueryCss: string[] = []
         for (const layoutElement of group.values) {
@@ -213,16 +205,18 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
             }
             mediaQueryCss.push(...layoutElementCss)
         }
-        if (group.mediaQuery.type === "InferiorOrEqualTo") {
-            cssRules.push(`@media (width <= ${group.mediaQuery.size}px) { ${mediaQueryCss.join('')} }`)
-        } else if (group.mediaQuery.type === "SuperiorTo") {
-            cssRules.push(`@media (width > ${group.mediaQuery.size}px) { ${mediaQueryCss.join('')} }`)
+        if (mediaQuery.type === "InferiorOrEqualTo") {
+            const replacedMediaQueryCss = mediaQueryCss.map(css => css.replace("layout", `layout${mediaQuery.size}px`));
+            cssRules.push(`@media (width <= ${mediaQuery.size}px) { ${replacedMediaQueryCss.join('')} }`)
+        } else if (mediaQuery.type === "SuperiorTo") {
+            cssRules.push(`@media (width > ${mediaQuery.size}px) { ${mediaQueryCss.join('')} }`)
         }
         else if (group.mediaQuery.type === "None") {
             cssRules.push(mediaQueryCss.join(''))
         }
 
     }
+    console.log(cssRules.join(''))
     return cssRules.join("\n")
 }
 

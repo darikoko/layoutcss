@@ -5,8 +5,8 @@ export type MediaQuery =
     | { type: 'None' }
 
 export function cmpMediaQuery(a: MediaQuery, b: MediaQuery): number {
-    if ((a.type === 'SuperiorTo' && b.type === 'InferiorOrEqualTo') || (a.type === 'None' && b.type !== 'None')) return 1;
-    if (a.type === 'InferiorOrEqualTo' && b.type === 'SuperiorTo' || (b.type === 'None' && a.type !== 'None')) return -1;
+    if ((a.type === 'SuperiorTo' && b.type === 'InferiorOrEqualTo') || (a.type === 'None' && b.type !== 'None')) return -1;
+    if (a.type === 'InferiorOrEqualTo' && b.type === 'SuperiorTo' || (b.type === 'None' && a.type !== 'None')) return 1;
     if (a.type !== 'None' && b.type !== 'None') {
         return b.size - a.size
     }

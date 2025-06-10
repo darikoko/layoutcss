@@ -10,7 +10,7 @@ export function getHarmonic(value: string, harmonic: number): string {
     }
 
     if (value === "none") {
-        return "0.0";
+        return "0px";
     }
 
     if (isStrictNumber((value))) {
@@ -18,6 +18,7 @@ export function getHarmonic(value: string, harmonic: number): string {
         return `${computed.toFixed(5)}rem`;
     }
 
-    // si ce n'est pas un nombre sans unité, on retourne la valeur telle quelle
+    // if it's not a number without unit, (for examaple if it's a css variable)
+    // we return the value as it is.
     return value;
 }
