@@ -9,8 +9,8 @@ export function cmpMediaQuery(a: MediaQuery, b: MediaQuery): number {
     // Assign priorities to types
     const getPriority = (mq: MediaQuery): number => {
         switch (mq.type) {
-            case 'InferiorOrEqualTo': return 0;
-            case 'None': return 1;
+            case 'None': return 0;
+            case 'InferiorOrEqualTo': return 1;
             case 'SuperiorTo': return 2;
         }
     };

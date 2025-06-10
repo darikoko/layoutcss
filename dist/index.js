@@ -1233,9 +1233,9 @@ var wStyle2 = (value) => `
 function cmpMediaQuery(a, b) {
   const getPriority = (mq) => {
     switch (mq.type) {
-      case "InferiorOrEqualTo":
-        return 0;
       case "None":
+        return 0;
+      case "InferiorOrEqualTo":
         return 1;
       case "SuperiorTo":
         return 2;
@@ -1691,18 +1691,16 @@ var Parser = class {
           this.tagNameEnd = i - 1;
         }
         console.log(this.layoutAttributeValue(), "dfffff", this.tagName());
-        if (this.layoutAttributeValue() === "") {
-          const elements = generateElements(this.tagName(), this.layoutAttributeValue(), { type: "None" });
-          this.addElements(elements);
-        }
+        const elements = generateElements(this.tagName(), this.layoutAttributeValue(), { type: "None" });
+        this.addElements(elements);
         if (this.biggestBreakpoint) {
           const mq = {
             type: "SuperiorTo",
             size: this.biggestBreakpoint,
             layoutAttributeValue: this.biggestBreakpointValue
           };
-          const elements = generateElements(this.tagName(), this.layoutAttributeValue(), mq);
-          this.addElements(elements);
+          const elements2 = generateElements(this.tagName(), this.layoutAttributeValue(), mq);
+          this.addElements(elements2);
         }
         this.resetIndexes();
       }
