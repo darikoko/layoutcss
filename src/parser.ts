@@ -109,6 +109,7 @@ export class Parser {
 
     transition(c: string): State {
         if (this.state === State.Resting && c === '<') return State.InsideTag;
+        if (this.state === State.InsideTag && c === '/') return State.Resting;
         if (this.state === State.InsideTag && /[a-zA-Z]/.test(c)) return State.ReadingTagName;
         if ((this.state === State.ReadingTagName || this.state === State.ReadingAttributeName) && /\s/.test(c)) return State.AfterTagName;
         if (this.state === State.AfterTagName && /[a-zA-Z]/.test(c)) return State.ReadingAttributeName;
@@ -175,10 +176,13 @@ export class Parser {
                     this.tagNameEnd = i - 1;
                 }
                 // here we generate the elements for the regular layout attribute,
-                // if there is one, (in some case we juste have <box-l>...</box-l> without layout attribute
-                // we do this when we leave the tag
-                const elements = generateElements(this.tagName(), this.layoutAttributeValue(), {type:"None"})
-                this.addElements(elements)
+                // if there is one, (in some case we juste have <box-l>...</box-l> without layout attribute)
+                // if we have a layout attribute, the element has already been created when leaving the layout attribute
+                console.log(this.layoutAttributeValue(), "dfffff", this.tagName())
+                if (this.layoutAttributeValue() === "") {
+                    const elements = generateElements(this.tagName(), this.layoutAttributeValue(), {type:"None"})
+                    this.addElements(elements)
+                }
 
                 // if we have a biggestBreakpoint, we need to generate elements
                 // for the component when SuperiorTo, generate will ignore utilities in this case

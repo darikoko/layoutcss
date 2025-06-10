@@ -1,7 +1,7 @@
 {
   "name": "@nimbusteam/layoutcss",
   "type": "module",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/darikoko/layoutcss.git"
@@ -43,6 +43,8 @@
     "chokidar": "^4.0.3",
     "clean-css": "^5.3.3",
     "csso": "^5.0.5",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.3",
     "zod": "^3.24.4"
   }
 }

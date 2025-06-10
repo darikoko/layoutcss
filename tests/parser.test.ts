@@ -1,10 +1,15 @@
 // tests/parser.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Parser, State  } from '../src/parser'; // adapte ce chemin si nécessaire
+import { Parser, State  } from '../src/parser.js'; // adapte ce chemin si nécessaire
 
 
 
 describe('Parser logic', () => {
+    it('read / in tag should change state to resting', () => {
+        const parser = new Parser('</');
+        parser.parse();
+        expect(parser.state).toBe(State.Resting);
+    });
     it('read jsx should works', () => {
         const parser = new Parser('<div  layout="p:2" onclick={() => {console.log("bb")}} layout400px="pt:3"');
         parser.parse();

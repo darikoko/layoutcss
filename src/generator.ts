@@ -216,7 +216,6 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
         }
 
     }
-    console.log(cssRules.join(''))
     return cssRules.join("\n")
 }
 

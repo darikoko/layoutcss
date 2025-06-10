@@ -1233,11 +1233,11 @@ var wStyle2 = (value) => `
 function cmpMediaQuery(a, b) {
   const getPriority = (mq) => {
     switch (mq.type) {
-      case "None":
-        return 0;
-      case "SuperiorTo":
-        return 1;
       case "InferiorOrEqualTo":
+        return 0;
+      case "None":
+        return 1;
+      case "SuperiorTo":
         return 2;
     }
   };
@@ -1539,7 +1539,6 @@ function generateCss(layoutMap, harmonicRatio) {
       cssRules.push(mediaQueryCss.join(""));
     }
   }
-  console.log(cssRules.join(""));
   return cssRules.join("\n");
 }
 function removeDuplicates(list) {
@@ -1631,6 +1630,7 @@ var Parser = class {
   }
   transition(c) {
     if (this.state === "Resting" /* Resting */ && c === "<") return "InsideTag" /* InsideTag */;
+    if (this.state === "InsideTag" /* InsideTag */ && c === "/") return "Resting" /* Resting */;
     if (this.state === "InsideTag" /* InsideTag */ && /[a-zA-Z]/.test(c)) return "ReadingTagName" /* ReadingTagName */;
     if ((this.state === "ReadingTagName" /* ReadingTagName */ || this.state === "ReadingAttributeName" /* ReadingAttributeName */) && /\s/.test(c)) return "AfterTagName" /* AfterTagName */;
     if (this.state === "AfterTagName" /* AfterTagName */ && /[a-zA-Z]/.test(c)) return "ReadingAttributeName" /* ReadingAttributeName */;
@@ -1690,16 +1690,19 @@ var Parser = class {
         if (this.state === "ReadingTagName" /* ReadingTagName */) {
           this.tagNameEnd = i - 1;
         }
-        const elements = generateElements(this.tagName(), this.layoutAttributeValue(), { type: "None" });
-        this.addElements(elements);
+        console.log(this.layoutAttributeValue(), "dfffff", this.tagName());
+        if (this.layoutAttributeValue() === "") {
+          const elements = generateElements(this.tagName(), this.layoutAttributeValue(), { type: "None" });
+          this.addElements(elements);
+        }
         if (this.biggestBreakpoint) {
           const mq = {
             type: "SuperiorTo",
             size: this.biggestBreakpoint,
             layoutAttributeValue: this.biggestBreakpointValue
           };
-          const elements2 = generateElements(this.tagName(), this.layoutAttributeValue(), mq);
-          this.addElements(elements2);
+          const elements = generateElements(this.tagName(), this.layoutAttributeValue(), mq);
+          this.addElements(elements);
         }
         this.resetIndexes();
       }
