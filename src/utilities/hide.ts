@@ -1,4 +1,4 @@
-import {Utility} from "./utility";
+import {Utility} from "./utility.js";
 
 export class HideOver extends Utility {
     getCss(): string[] {

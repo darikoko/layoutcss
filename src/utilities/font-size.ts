@@ -1,5 +1,5 @@
 import {getHarmonic} from "../harmonic.js";
-import {Utility} from "./utility";
+import {Utility} from "./utility.js";
 
 export class FontSize extends Utility {
     getCss(harmonicRatio:number): string[] {
@@ -11,7 +11,7 @@ export class FontSize extends Utility {
 }
 
 const fontSizeStyle = (value: string, harmonicValue:string) => `
-  [layout~="fz:${value}"] {
+  [layout~="font-size:${value}"] {
     font-size: ${harmonicValue};
   }
   `

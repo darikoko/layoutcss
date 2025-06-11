@@ -69,7 +69,7 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "pr": Pr,
     "px": Px,
     "py": Py,
-    "fz": FontSize,
+    "font-size": FontSize,
     "absolute": Absolute,
     "sticky": Sticky,
     "fixed": Fixed,

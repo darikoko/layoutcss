@@ -1,8 +1,8 @@
 import {describe, it, expect} from 'vitest';
-import {createUtility, generateCss, generateElements} from '../src/generator';
-import {transformChild, transformRecursive, Utility} from "../src/utilities/utility";
-import {Component} from "../src/components/component";
-import {Center} from "../src/components/center";
+import {createUtility, generateCss, generateElements} from '../src/generator.js';
+import {transformChild, transformRecursive, Utility} from "../src/utilities/utility.js";
+import {Component} from "../src/components/component.js";
+import {Center} from "../src/components/center.js";
 
 
 describe('recursive logic', () => {
@@ -39,7 +39,7 @@ describe('generateElements logic', () => {
     it('create elements', () => {
         const tagName = 'center-l'
         const layoutAttributeValue = 'p:2 pl-child:3 max-width:350px'
-        const elements = generateElements(tagName, layoutAttributeValue, {type:"None"})
+        const elements = generateElements(tagName, layoutAttributeValue, {type:"None"}, false)
 
     });
 
