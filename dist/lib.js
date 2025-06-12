@@ -1327,7 +1327,7 @@ var FontSize = class extends Utility {
   }
 };
 var fontSizeStyle = (value, harmonicValue) => `
-  [layout~="fz:${value}"] {
+  [layout~="font-size:${value}"] {
     font-size: ${harmonicValue};
   }
   `;
@@ -1366,7 +1366,7 @@ var utilityMap = {
   "pr": Pr,
   "px": Px,
   "py": Py,
-  "fz": FontSize,
+  "font-size": FontSize,
   "absolute": Absolute,
   "sticky": Sticky,
   "fixed": Fixed,
