@@ -14,7 +14,6 @@ const layoutConfigSchema = z.object({
     }),
     output: z.object({
         file: z.string(),
-        minify: z.boolean(),
     }),
 });
 
@@ -36,7 +35,6 @@ function defaultLayoutConfig(): LayoutConfig {
         },
         output: {
             file: "./layout.css",
-            minify: false
         },
     };
 }

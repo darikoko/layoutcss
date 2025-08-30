@@ -15,8 +15,7 @@ var layoutConfigSchema = z.object({
     dev: z.boolean()
   }),
   output: z.object({
-    file: z.string(),
-    minify: z.boolean()
+    file: z.string()
   })
 });
 function defaultLayoutConfig() {
@@ -1717,6 +1716,7 @@ var Parser = class {
 var dev_default = 'area-l,\ncenter-l,\nbox-l,\nextender-l,\ngrid-l,\nicon-l,\nrow-l,\nrack-l,\nsidebar-l,\nslider-l,\nstack-l,\nswitcher-l,\nol,\nul,\ndl,\ndiv,\nsection,\narticle,\nheader,\nfooter,\nmain,\nnav,\naside,\nfigure,\ndetails,\ninput,\nbutton,\ntextarea,\nselect,\nform,\nimg {\n    outline: 2px solid black;\n}\n\nbutton,\ninput,\ntextarea,\nselect {\n    background-color: gray;\n}\n\nimg:not([src]), img[src=""] {\n    background: #bababa;\n}';
 
 // src/index.ts
+import { transform } from "lightningcss";
 function cssProcess(path, finalMap, config) {
   readFile2(path, "utf8", (err, data) => {
     if (err) {
@@ -1731,8 +1731,7 @@ function cssProcess(path, finalMap, config) {
     if (config.style.dev) {
       css += dev_default;
     }
-    if (config.output.minify) {
-    }
+    css = minifyCss(css);
     const end = performance.now();
     writeFile2(config.output.file, css, "utf8", (err2) => {
       if (err2) {
@@ -1741,6 +1740,14 @@ function cssProcess(path, finalMap, config) {
     });
     console.log(`Css Generated in : ${end - start} ms`);
   });
+}
+function minifyCss(css) {
+  const { code } = transform({
+    filename: "final.css",
+    code: Buffer.from(css),
+    minify: true
+  });
+  return code.toString();
 }
 async function main() {
   const finalMap = /* @__PURE__ */ new Map();

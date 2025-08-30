@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-import {LayoutConfig, loadLayoutConfigFromJson} from "./config.js";
+import { LayoutConfig, loadLayoutConfigFromJson } from "./config.js";
 import chokidar from "chokidar";
-import {readFile, statSync, writeFile} from 'fs';
-import {Parser} from "./parser.js";
-import {Component} from "./components/component.js";
-import {Utility} from "./utilities/utility.js";
+import { readFile, statSync, writeFile } from 'fs';
+import { Parser } from "./parser.js";
+import { Component } from "./components/component.js";
+import { Utility } from "./utilities/utility.js";
 import DEV_CSS from './css/dev.css'
-import {generateCss, mergeMapsInPlace} from "./generator.js";
+import { generateCss, mergeMapsInPlace } from "./generator.js";
+import { transform } from "lightningcss";
 
 
 function cssProcess(path: string, finalMap: Map<string, (Utility | Component)[]>, config: LayoutConfig) {
@@ -20,12 +21,11 @@ function cssProcess(path: string, finalMap: Map<string, (Utility | Component)[]>
         parser.parse()
         mergeMapsInPlace(finalMap, parser.elements)
         let css = generateCss(finalMap, config.style.harmonicRatio)
-        if (config.style.dev){
+        if (config.style.dev) {
             css += DEV_CSS
         }
-        if (config.output.minify){
-            //TODO find a lib to minify css
-        }
+        css = minifyCss(css);
+
         const end = performance.now();
 
         writeFile(config.output.file, css, 'utf8', (err) => {
@@ -36,6 +36,15 @@ function cssProcess(path: string, finalMap: Map<string, (Utility | Component)[]>
 
         console.log(`Css Generated in : ${end - start} ms`);
     });
+}
+
+function minifyCss(css: string): string {
+    const { code } = transform({
+        filename: "final.css",
+        code: Buffer.from(css),
+        minify: true,
+    });
+    return code.toString();
 }
 
 async function main() {
