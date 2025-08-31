@@ -3,14 +3,16 @@ import {Utility} from "./utility.js";
 export class Z extends Utility {
     getCss(harmonicRatio:number): string[] {
         let css = []
-        css.push(wStyle(this.value))
+        css.push(zStyle(this.value))
         return css
     }
 }
 
 
-const wStyle = (value: string ) => `
-  [layout~="z:${value}"] {
+const zStyle = (value: string ) => `
+  [layout~="z:${value}"],
+  [layout~="z-index:${value}"]
+  {
     z-index: ${value};
   }
   `

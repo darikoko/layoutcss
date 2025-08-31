@@ -30,8 +30,7 @@ function defaultLayoutConfig() {
       dev: true
     },
     output: {
-      file: "./layout.css",
-      minify: false
+      file: "./layout.css"
     }
   };
 }
@@ -1218,12 +1217,14 @@ var wStyle = (value, harmonicValue) => `
 var Z = class extends Utility {
   getCss(harmonicRatio) {
     let css = [];
-    css.push(wStyle2(this.value));
+    css.push(zStyle(this.value));
     return css;
   }
 };
-var wStyle2 = (value) => `
-  [layout~="z:${value}"] {
+var zStyle = (value) => `
+  [layout~="z:${value}"],
+  [layout~="z-index:${value}"]
+  {
     z-index: ${value};
   }
   `;
@@ -1397,7 +1398,9 @@ var FontSize = class extends Utility {
   }
 };
 var fontSizeStyle = (value, harmonicValue) => `
-  [layout~="font-size:${value}"] {
+  [layout~="fz:${value}"],
+  [layout~="font-size:${value}"]
+  {
     font-size: ${harmonicValue};
   }
   `;
@@ -1437,6 +1440,8 @@ var utilityMap = {
   "px": Px,
   "py": Py,
   "font-size": FontSize,
+  "fz": FontSize,
+  // alias for font-size
   "absolute": Absolute,
   "sticky": Sticky,
   "fixed": Fixed,
@@ -1447,7 +1452,9 @@ var utilityMap = {
   "left": Left,
   "right": Right,
   "w": W,
+  "z-index": Z,
   "z": Z
+  // alias for z-index
 };
 function createComponent(tagName, layoutClasses) {
   const Cls = componentMap[tagName];
@@ -1733,6 +1740,10 @@ function cssProcess(path, finalMap, config) {
     }
     css = minifyCss(css);
     const end = performance.now();
+    const cssText = css;
+    const mediaCount = (cssText.match(/media/g) || []).length;
+    console.log(cssText, "CSSRULES");
+    console.log(`Nombre d'occurrences de 'media': ${mediaCount}`);
     writeFile2(config.output.file, css, "utf8", (err2) => {
       if (err2) {
         console.error("Error writing file:", err2);

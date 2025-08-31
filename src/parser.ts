@@ -84,7 +84,6 @@ export class Parser {
         if (newBreakpoint <= this.biggestBreakpoint) return;
         this.biggestBreakpoint = newBreakpoint;
         this.biggestBreakpointValue = this.layoutBreakpointAttributeValue();
-        console.log("DDDDDDDa", newBreakpoint, this.biggestBreakpointValue);
     }
 
     extractBreakpoint(): number {

@@ -70,6 +70,7 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "px": Px,
     "py": Py,
     "font-size": FontSize,
+    "fz": FontSize, // alias for font-size
     "absolute": Absolute,
     "sticky": Sticky,
     "fixed": Fixed,
@@ -80,7 +81,8 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "left": Left,
     "right": Right,
     "w": W,
-    "z": Z,
+    "z-index": Z,
+    "z": Z, // alias for z-index
 };
 
 /**
@@ -130,7 +132,6 @@ export function generateElements(tagName: string, layoutAttributeValue: string, 
     // if we are in the None MediaQuery and the component has a Biggest Breakpoint we dont want
     // to add it to the None MediaQuery, we only want it into SuperiorTo and InferiorOrEqualTo
     if (component && !(mediaQuery.type=== "None" && hasBiggestBreakpoint)) {
-        console.log("BOUUUUUUm", component, hasBiggestBreakpoint);
         elements.push(component)
     }
     // we dont want to add utility for superiorTo because its inherited between breakpoints
@@ -222,6 +223,7 @@ export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, har
         }
 
     }
+    
     return cssRules.join("\n")
 }
 

@@ -11,7 +11,9 @@ export class FontSize extends Utility {
 }
 
 const fontSizeStyle = (value: string, harmonicValue:string) => `
-  [layout~="font-size:${value}"] {
+  [layout~="fz:${value}"],
+  [layout~="font-size:${value}"]
+  {
     font-size: ${harmonicValue};
   }
   `

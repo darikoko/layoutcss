@@ -21,6 +21,7 @@ function cssProcess(path: string, finalMap: Map<string, (Utility | Component)[]>
         parser.parse()
         mergeMapsInPlace(finalMap, parser.elements)
         let css = generateCss(finalMap, config.style.harmonicRatio)
+
         if (config.style.dev) {
             css += DEV_CSS
         }
@@ -83,7 +84,7 @@ async function main() {
         let config = await loadLayoutConfigFromJson()
         // here we give path as parameter only to reprocess css
         cssProcess(path, finalMap, config);
-        console.log("CONFIG CHANGE")
+        console.log("CONFIG CHANGED")
     })
 
 
