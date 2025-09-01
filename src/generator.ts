@@ -189,7 +189,6 @@ function shallowEqual(a: Utility | Component, b: Utility | Component) :boolean{
  * Generate Css from a layoutMap and a harmonic ratio
  **/
 export function generateCss(layoutMap: Map<string, (Utility | Component)[]>, harmonicRatio: number): string {
-    console.log(layoutMap)
     const sortedList = Array.from(layoutMap.entries()).map(([key, value]) => ({
         mediaQuery: JSON.parse(key) as MediaQuery,
         values: value

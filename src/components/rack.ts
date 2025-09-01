@@ -74,6 +74,7 @@ const rackMinHeightStyle = (value: string, harmonic: string) => `
 const rackMaxHeightStyle = (value: string, harmonic: string) => `
   rack-l[layout~="max-height:${value}"] {
     max-height: ${harmonic};
+    overflow-y: auto;
   }
 `;
 

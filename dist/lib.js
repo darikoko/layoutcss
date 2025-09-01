@@ -302,6 +302,7 @@ var rackMinHeightStyle = (value, harmonic) => `
 var rackMaxHeightStyle = (value, harmonic) => `
   rack-l[layout~="max-height:${value}"] {
     max-height: ${harmonic};
+    overflow-y: auto;
   }
 `;
 var rackGapStyle = (value, harmonic) => `
@@ -1416,7 +1417,6 @@ function generateElements(tagName, layoutAttributeValue, mediaQuery, hasBiggestB
   const elements = [];
   let component = createComponent(tagName, layoutClasses);
   if (component && !(mediaQuery.type === "None" && hasBiggestBreakpoint)) {
-    console.log("BOUUUUUUm", component, hasBiggestBreakpoint);
     elements.push(component);
   }
   if (mediaQuery.type === "SuperiorTo") {
@@ -1431,7 +1431,6 @@ function generateElements(tagName, layoutAttributeValue, mediaQuery, hasBiggestB
   return { mediaQuery, elements };
 }
 function generateCss(layoutMap, harmonicRatio) {
-  console.log(layoutMap);
   const sortedList = Array.from(layoutMap.entries()).map(([key, value]) => ({
     mediaQuery: JSON.parse(key),
     values: value
@@ -1521,7 +1520,6 @@ var Parser = class {
     if (newBreakpoint <= this.biggestBreakpoint) return;
     this.biggestBreakpoint = newBreakpoint;
     this.biggestBreakpointValue = this.layoutBreakpointAttributeValue();
-    console.log("DDDDDDDa", newBreakpoint, this.biggestBreakpointValue);
   }
   extractBreakpoint() {
     const attributeName = this.attributeName();

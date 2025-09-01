@@ -371,6 +371,7 @@ var rackMinHeightStyle = (value, harmonic) => `
 var rackMaxHeightStyle = (value, harmonic) => `
   rack-l[layout~="max-height:${value}"] {
     max-height: ${harmonic};
+    overflow-y: auto;
   }
 `;
 var rackGapStyle = (value, harmonic) => `
@@ -1485,7 +1486,6 @@ function generateElements(tagName, layoutAttributeValue, mediaQuery, hasBiggestB
   const elements = [];
   let component = createComponent(tagName, layoutClasses);
   if (component && !(mediaQuery.type === "None" && hasBiggestBreakpoint)) {
-    console.log("BOUUUUUUm", component, hasBiggestBreakpoint);
     elements.push(component);
   }
   if (mediaQuery.type === "SuperiorTo") {
@@ -1519,7 +1519,6 @@ function shallowEqual(a, b) {
   return keys1.every((key) => b.hasOwnProperty(key) && a[key] === b[key]);
 }
 function generateCss(layoutMap, harmonicRatio) {
-  console.log(layoutMap);
   const sortedList = Array.from(layoutMap.entries()).map(([key, value]) => ({
     mediaQuery: JSON.parse(key),
     values: value
@@ -1618,7 +1617,6 @@ var Parser = class {
     if (newBreakpoint <= this.biggestBreakpoint) return;
     this.biggestBreakpoint = newBreakpoint;
     this.biggestBreakpointValue = this.layoutBreakpointAttributeValue();
-    console.log("DDDDDDDa", newBreakpoint, this.biggestBreakpointValue);
   }
   extractBreakpoint() {
     const attributeName = this.attributeName();
@@ -1740,10 +1738,6 @@ function cssProcess(path, finalMap, config) {
     }
     css = minifyCss(css);
     const end = performance.now();
-    const cssText = css;
-    const mediaCount = (cssText.match(/media/g) || []).length;
-    console.log(cssText, "CSSRULES");
-    console.log(`Nombre d'occurrences de 'media': ${mediaCount}`);
     writeFile2(config.output.file, css, "utf8", (err2) => {
       if (err2) {
         console.error("Error writing file:", err2);
@@ -1788,7 +1782,7 @@ async function main() {
   configWatcher.on("change", async (path) => {
     let config2 = await loadLayoutConfigFromJson();
     cssProcess(path, finalMap, config2);
-    console.log("CONFIG CHANGE");
+    console.log("CONFIG CHANGED");
   });
 }
 main();
