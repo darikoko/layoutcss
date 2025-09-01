@@ -27,6 +27,7 @@ import {Area} from "./components/area.js";
 import {FontSize} from "./utilities/font-size.js";
 
 import RESET_CSS from './css/reset.css'
+import { Overflow, OverflowX, OverflowY } from "./utilities/overflow.js";
 
 
 
@@ -71,6 +72,12 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "py": Py,
     "font-size": FontSize,
     "fz": FontSize, // alias for font-size
+    "overflow": Overflow,
+    "of": Overflow, // alias for overflow
+    "overflow-x": OverflowX,
+    "ofx": OverflowX, // alias for overflow-x
+    "overflow-y": OverflowY,
+    "ofy": OverflowY, // alias for overflow-y
     "absolute": Absolute,
     "sticky": Sticky,
     "fixed": Fixed,
