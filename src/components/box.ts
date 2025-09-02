@@ -38,6 +38,7 @@ const boxGrowStyle = `
 const boxMaxWidthStyle = (value: string) => `
   box-l[layout~="max-width:${value}"] {
     max-inline-size: ${value};
+    flex-basis: ${value};
   }
 `;
 

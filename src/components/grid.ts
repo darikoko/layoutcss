@@ -1,70 +1,74 @@
 
 import { getHarmonic } from "../harmonic.js";
-import {Component} from "./component.js";
+import { Component } from "./component.js";
 
-export class Grid extends  Component{
-    minCellWidth: string = "";
-    minCols: string = "";
-    maxCols: string = "";
-    gap: string = "";
-    gapX: string = "";
-    gapY: string = "";
+export class Grid extends Component {
+  minCellWidth: string = "";
+  minCols: string = "";
+  maxCols: string = "";
+  gap: string = "";
+  gapX: string = "";
+  gapY: string = "";
+  cols: string = "";
 
-    constructor(layoutClasses: string[]) {
-        super()
-        this.setComponent(layoutClasses)
+  constructor(layoutClasses: string[]) {
+    super()
+    this.setComponent(layoutClasses)
+  }
+
+  getCss(harmonicRatio: number): string[] {
+    let css = [gridStyle];
+
+    if (this.gap) {
+      const harmonicValue = getHarmonic(this.gap, harmonicRatio);
+      css.push(gridGapStyle(this.gap, harmonicValue));
     }
 
-    getCss(harmonicRatio:number): string[] {
-        let css = [gridStyle];
-
-        if (this.gap) {
-            const harmonicValue = getHarmonic(this.gap, harmonicRatio);
-            css.push(gridGapStyle(this.gap, harmonicValue));
-        }
-
-        if (this.gapX) {
-            const harmonicValue = getHarmonic(this.gapX, harmonicRatio);
-            css.push(gridGapXStyle(this.gapX, harmonicValue));
-        }
-
-        if (this.gapY) {
-            const harmonicValue = getHarmonic(this.gapY, harmonicRatio);
-            css.push(gridGapYStyle(this.gapY, harmonicValue));
-        }
-
-        if (this.minCellWidth) {
-            const minCols = this.minCols || null;
-            const maxCols = this.maxCols || null;
-
-            if (minCols && maxCols) {
-                const gapDeltaMin = gapDelta(minCols, this.gap, harmonicRatio);
-                const gapDeltaMax = gapDelta(maxCols, this.gap, harmonicRatio);
-                const fr = 1.0 / (parseFloat(minCols) || 1);
-
-                css.push(
-                    gridGroupMinColsMaxCols(
-                        this.minCellWidth,
-                        minCols,
-                        maxCols,
-                        gapDeltaMin,
-                        gapDeltaMax,
-                        fr
-                    )
-                );
-            } else if (minCols && !maxCols) {
-                const gapDeltaMin = gapDelta(minCols, this.gap, harmonicRatio);
-                css.push(gridGroupMinCols(this.minCellWidth, minCols, gapDeltaMin));
-            } else if (!minCols && maxCols) {
-                const gapDeltaMax = gapDelta(maxCols, this.gap, harmonicRatio);
-                css.push(gridGroupMaxCols(this.minCellWidth, maxCols, gapDeltaMax));
-            } else {
-                css.push(gridGroupEmpty(this.minCellWidth));
-            }
-        }
-
-        return css;
+    if (this.gapX) {
+      const harmonicValue = getHarmonic(this.gapX, harmonicRatio);
+      css.push(gridGapXStyle(this.gapX, harmonicValue));
     }
+
+    if (this.gapY) {
+      const harmonicValue = getHarmonic(this.gapY, harmonicRatio);
+      css.push(gridGapYStyle(this.gapY, harmonicValue));
+    }
+
+    if (this.cols) {
+      css.push(gridFixedCols(this.cols));
+    }
+    else if (this.minCellWidth) {
+      const minCols = this.minCols || null;
+      const maxCols = this.maxCols || null;
+
+      if (minCols && maxCols) {
+        const gapDeltaMin = gapDelta(minCols, this.gap, harmonicRatio);
+        const gapDeltaMax = gapDelta(maxCols, this.gap, harmonicRatio);
+        const fr = 1.0 / (parseFloat(minCols) || 1);
+
+        css.push(
+          gridGroupMinColsMaxCols(
+            this.minCellWidth,
+            minCols,
+            maxCols,
+            gapDeltaMin,
+            gapDeltaMax,
+            fr
+          )
+        );
+      } else if (minCols && !maxCols) {
+        const gapDeltaMin = gapDelta(minCols, this.gap, harmonicRatio);
+        css.push(gridGroupMinCols(this.minCellWidth, minCols, gapDeltaMin));
+      } else if (!minCols && maxCols) {
+        const gapDeltaMax = gapDelta(maxCols, this.gap, harmonicRatio);
+        css.push(gridGroupMaxCols(this.minCellWidth, maxCols, gapDeltaMax));
+      } else {
+        css.push(gridGroupEmpty(this.minCellWidth));
+      }
+    }
+
+    return css;
+  }
 }
 
 const gridStyle = `
@@ -91,6 +95,12 @@ const gridGapYStyle = (value: string, harmonic: string) => `
   }
 `;
 
+const gridFixedCols = (cols: string) => `
+  grid-l[layout*="cols:${cols}"] {
+    grid-template-columns: repeat(${cols}, 1fr);
+  }
+`;
+
 const gridGroupEmpty = (minCellWidth: string) => `
   grid-l[layout*="min-cell-width:${minCellWidth}"] {
     grid-template-columns: repeat(auto-fit, minmax(min(${minCellWidth}, 100%), 1fr));
@@ -98,9 +108,9 @@ const gridGroupEmpty = (minCellWidth: string) => `
 `;
 
 const gridGroupMaxCols = (
-    minCellWidth: string,
-    maxCols: string,
-    gapDeltaMax: string
+  minCellWidth: string,
+  maxCols: string,
+  gapDeltaMax: string
 ) => `
   grid-l[layout*="min-cell-width:${minCellWidth}"][layout*="max-cols:${maxCols}"] {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, max(${minCellWidth}, (100% / ${maxCols} - ${gapDeltaMax}))), 1fr));
@@ -108,9 +118,9 @@ const gridGroupMaxCols = (
 `;
 
 const gridGroupMinCols = (
-    minCellWidth: string,
-    minCols: string,
-    gapDeltaMin: string
+  minCellWidth: string,
+  minCols: string,
+  gapDeltaMin: string
 ) => `
   grid-l[layout*="min-cell-width:${minCellWidth}"][layout*="min-cols:${minCols}"]:has(:nth-child(${minCols})) {
     grid-template-columns: repeat(auto-fit, minmax(min((100% / ${minCols} - ${gapDeltaMin}), ${minCellWidth}), 1fr));
@@ -121,12 +131,12 @@ const gridGroupMinCols = (
 `;
 
 const gridGroupMinColsMaxCols = (
-    minCellWidth: string,
-    minCols: string,
-    maxCols: string,
-    gapDeltaMin: string,
-    gapDeltaMax: string,
-    fr: number
+  minCellWidth: string,
+  minCols: string,
+  maxCols: string,
+  gapDeltaMin: string,
+  gapDeltaMax: string,
+  fr: number
 ) => `
   grid-l[layout*="min-cell-width:${minCellWidth}"][layout*="min-cols:${minCols}"][layout*="max-cols:${maxCols}"]:has(:nth-child(${minCols})) {
     grid-template-columns:
@@ -146,16 +156,16 @@ const gridGroupMinColsMaxCols = (
 `;
 
 const gapDelta = (
-    cols: string,
-    gap: string,
-    harmonicRatio: number
+  cols: string,
+  gap: string,
+  harmonicRatio: number
 ): string => {
-    if (gap) {
-        const colsNumber = parseFloat(cols);
-        if (!isNaN(colsNumber)) {
-            const hr = getHarmonic(gap, harmonicRatio);
-            return `${hr} * (${colsNumber} - 0.98) / ${colsNumber}`;
-        }
+  if (gap) {
+    const colsNumber = parseFloat(cols);
+    if (!isNaN(colsNumber)) {
+      const hr = getHarmonic(gap, harmonicRatio);
+      return `${hr} * (${colsNumber} - 0.98) / ${colsNumber}`;
     }
-    return "0px";
+  }
+  return "0px";
 };

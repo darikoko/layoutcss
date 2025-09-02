@@ -52,6 +52,7 @@ center-l[layout~="recursive"] {
 const centerMaxWidthStyle = (value: string): string => `
   center-l[layout~="max-width:${value}"] {
     max-inline-size: ${value};
+    flex-basis: ${value};
     --center-max-width: ${value};
   }
 `;

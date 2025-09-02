@@ -119,6 +119,7 @@ var Grid = class extends Component {
   gap = "";
   gapX = "";
   gapY = "";
+  cols = "";
   constructor(layoutClasses) {
     super();
     this.setComponent(layoutClasses);
@@ -137,7 +138,9 @@ var Grid = class extends Component {
       const harmonicValue = getHarmonic(this.gapY, harmonicRatio);
       css.push(gridGapYStyle(this.gapY, harmonicValue));
     }
-    if (this.minCellWidth) {
+    if (this.cols) {
+      css.push(gridFixedCols(this.cols));
+    } else if (this.minCellWidth) {
       const minCols = this.minCols || null;
       const maxCols = this.maxCols || null;
       if (minCols && maxCols) {
@@ -185,6 +188,11 @@ var gridGapXStyle = (value, harmonic) => `
 var gridGapYStyle = (value, harmonic) => `
   grid-l[layout~="gap-y:${value}"] {
     row-gap: ${harmonic};
+  }
+`;
+var gridFixedCols = (cols) => `
+  grid-l[layout*="cols:${cols}"] {
+    grid-template-columns: repeat(${cols}, 1fr);
   }
 `;
 var gridGroupEmpty = (minCellWidth) => `
@@ -617,6 +625,7 @@ center-l[layout~="recursive"] {
 var centerMaxWidthStyle = (value) => `
   center-l[layout~="max-width:${value}"] {
     max-inline-size: ${value};
+    flex-basis: ${value};
     --center-max-width: ${value};
   }
 `;
@@ -655,6 +664,7 @@ var boxGrowStyle = `
 var boxMaxWidthStyle = (value) => `
   box-l[layout~="max-width:${value}"] {
     max-inline-size: ${value};
+    flex-basis: ${value};
   }
 `;
 
@@ -1409,13 +1419,173 @@ var fontSizeStyle = (value, harmonicValue) => `
 // src/css/reset.css
 var reset_default = "* {\n    margin: 0;\n    padding: 0;\n    box-sizing: border-box;\n}\n\nhtml {\n    font-size: 1rem;\n}\n\nbody {\n    container-type: inline-size;\n}\n\nh1, h2, h3, h4, h5, h6 {\n    font-size: inherit;\n    font-weight: normal;\n}\n\nimg {\n    display: block;\n    width: 100%;\n    object-fit: cover;\n}\n\na, a:visited, a:hover, a:active, a:focus {\n    display: inline-block;\n    cursor: pointer;\n    text-decoration: none;\n    color: inherit;\n}\n\ninput, select {\n    display: block;\n    width: 100%;\n}\n\nbutton {\n    cursor: pointer;\n    color: inherit;\n    border: none;\n    font: inherit;\n}\n\nspan, strong, label {\n    display: inline-block;\n}\n";
 
+// src/utilities/overflow.ts
+var Overflow = class extends Utility {
+  getCss() {
+    let css = [];
+    css.push(overflowStyle(this.value));
+    return css;
+  }
+};
+var overflowStyle = (value) => `
+  [layout~="overflow:${value}"],
+  [layout~="of:${value}"],
+  {
+    overflow: ${value};
+  }
+  `;
+var OverflowX = class extends Utility {
+  getCss() {
+    let css = [];
+    css.push(overflowXStyle(this.value));
+    return css;
+  }
+};
+var overflowXStyle = (value) => `
+  [layout~="overflow-x:${value}"],
+  [layout~="ofx:${value}"],
+  {
+    overflow-x: ${value};
+  }
+  `;
+var OverflowY = class extends Utility {
+  getCss() {
+    let css = [];
+    css.push(overflowYStyle(this.value));
+    return css;
+  }
+};
+var overflowYStyle = (value) => `
+  [layout~="overflow-y:${value}"],
+  [layout~="ofy:${value}"],
+  {
+    overflow-y: ${value};
+  }
+  `;
+
+// src/utilities/text-align.ts
+var TextAlign = class extends Utility {
+  getCss() {
+    let css = [];
+    css.push(textAlignStyle(this.value));
+    return css;
+  }
+};
+var textAlignStyle = (value) => `
+  [layout~="text:${value}"] {
+    text-align: ${value};
+  }
+`;
+
+// src/components/col.ts
+var Col = class extends Component {
+  nowrap = false;
+  twinWidth = false;
+  justify = "";
+  align = "";
+  gap = "";
+  gapX = "";
+  gapY = "";
+  constructor(layoutClasses) {
+    super();
+    this.setComponent(layoutClasses);
+  }
+  getCss(harmonicRatio) {
+    const css = [colStyle];
+    if (this.nowrap) css.push(colNoWrapStyle);
+    if (this.twinWidth) css.push(colTwinWidthStyle);
+    if (this.justify) css.push(colJustifyStyle(this.justify));
+    if (this.align) css.push(colAlignStyle(this.align));
+    if (this.gap) {
+      const harmonicValue = getHarmonic(this.gap, harmonicRatio);
+      css.push(colGapStyle(this.gap, harmonicValue));
+    }
+    if (this.gapX) {
+      const harmonicValue = getHarmonic(this.gapX, harmonicRatio);
+      css.push(colGapXStyle(this.gapX, harmonicValue));
+    }
+    if (this.gapY) {
+      const harmonicValue = getHarmonic(this.gapY, harmonicRatio);
+      css.push(colGapYStyle(this.gapY, harmonicValue));
+    }
+    return css;
+  }
+};
+var colStyle = `
+  col-l {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  col-l > * {
+    min-width: 0;
+  }
+`;
+var colNoWrapStyle = `
+  col-l[layout~="nowrap"] {
+    flex-wrap: nowrap;
+  }
+`;
+var colTwinWidthStyle = `
+  col-l[layout~="twin-width"] > * {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+  }
+`;
+var colJustifyStyle = (value) => `
+  col-l[layout~="justify:${value}"] {
+    justify-content: ${value};
+  }
+`;
+var colAlignStyle = (value) => `
+  col-l[layout~="align:${value}"] {
+    align-items: ${value};
+  }
+`;
+var colGapStyle = (value, harmonic) => `
+  col-l[layout~="gap:${value}"] {
+    gap: ${harmonic};
+  }
+`;
+var colGapXStyle = (value, harmonic) => `
+  col-l[layout~="gap-x:${value}"] {
+    column-gap: ${harmonic};
+  }
+`;
+var colGapYStyle = (value, harmonic) => `
+  col-l[layout~="gap-y:${value}"] {
+    col-gap: ${harmonic};
+  }
+`;
+
+// src/components/middle.ts
+var Middle = class extends Component {
+  constructor(layoutClasses) {
+    super();
+    this.setComponent(layoutClasses);
+  }
+  getCss() {
+    let css = [middleStyle];
+    return css;
+  }
+};
+var middleStyle = `
+  middle-l {
+    margin-block: auto;
+  }
+`;
+
 // src/generator.ts
 var componentMap = {
   "area-l": Area,
   "box-l": Box,
   "center-l": Center,
+  "col-l": Col,
   "extender-l": Extender,
   "grid-l": Grid,
+  "middle-l": Middle,
   "rack-l": Rack,
   "sidebar-l": Sidebar,
   "switcher-l": Switcher,
@@ -1443,6 +1613,16 @@ var utilityMap = {
   "font-size": FontSize,
   "fz": FontSize,
   // alias for font-size
+  "text": TextAlign,
+  "overflow": Overflow,
+  "of": Overflow,
+  // alias for overflow
+  "overflow-x": OverflowX,
+  "ofx": OverflowX,
+  // alias for overflow-x
+  "overflow-y": OverflowY,
+  "ofy": OverflowY,
+  // alias for overflow-y
   "absolute": Absolute,
   "sticky": Sticky,
   "fixed": Fixed,

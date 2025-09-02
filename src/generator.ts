@@ -28,6 +28,9 @@ import {FontSize} from "./utilities/font-size.js";
 
 import RESET_CSS from './css/reset.css'
 import { Overflow, OverflowX, OverflowY } from "./utilities/overflow.js";
+import { TextAlign } from "./utilities/text-align.js";
+import { Col } from "./components/col.js";
+import { Middle } from "./components/middle.js";
 
 
 
@@ -43,8 +46,10 @@ const componentMap: Record<string, new (...args: any[]) => any> = {
     "area-l": Area,
     "box-l": Box,
     "center-l": Center,
+    "col-l": Col,
     "extender-l": Extender,
     "grid-l": Grid,
+    "middle-l": Middle,
     "rack-l": Rack,
     "sidebar-l": Sidebar,
     "switcher-l": Switcher,
@@ -72,6 +77,7 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "py": Py,
     "font-size": FontSize,
     "fz": FontSize, // alias for font-size
+    "text": TextAlign,
     "overflow": Overflow,
     "of": Overflow, // alias for overflow
     "overflow-x": OverflowX,
