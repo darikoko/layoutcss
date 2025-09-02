@@ -11,7 +11,7 @@ export class Overflow extends Utility {
 
 const overflowStyle = (value: string) => `
   [layout~="overflow:${value}"],
-  [layout~="of:${value}"],
+  [layout~="of:${value}"]
   {
     overflow: ${value};
   }
@@ -27,7 +27,7 @@ export class OverflowX extends Utility {
 
 const overflowXStyle = (value: string) => `
   [layout~="overflow-x:${value}"],
-  [layout~="ofx:${value}"],
+  [layout~="ofx:${value}"]
   {
     overflow-x: ${value};
   }
@@ -43,7 +43,7 @@ export class OverflowY extends Utility {
 
 const overflowYStyle = (value: string) => `
   [layout~="overflow-y:${value}"],
-  [layout~="ofy:${value}"],
+  [layout~="ofy:${value}"]
   {
     overflow-y: ${value};
   }
