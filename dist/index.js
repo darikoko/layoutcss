@@ -1356,7 +1356,7 @@ var Overflow = class extends Utility {
 };
 var overflowStyle = (value) => `
   [layout~="overflow:${value}"],
-  [layout~="of:${value}"],
+  [layout~="of:${value}"]
   {
     overflow: ${value};
   }
@@ -1370,7 +1370,7 @@ var OverflowX = class extends Utility {
 };
 var overflowXStyle = (value) => `
   [layout~="overflow-x:${value}"],
-  [layout~="ofx:${value}"],
+  [layout~="ofx:${value}"]
   {
     overflow-x: ${value};
   }
@@ -1384,7 +1384,7 @@ var OverflowY = class extends Utility {
 };
 var overflowYStyle = (value) => `
   [layout~="overflow-y:${value}"],
-  [layout~="ofy:${value}"],
+  [layout~="ofy:${value}"]
   {
     overflow-y: ${value};
   }
