@@ -1,7 +1,6 @@
 import {Component} from "./components/component.js";
 import {Grid} from "./components/grid.js";
 import {Extender} from "./components/extender.js";
-import {Rack} from "./components/rack.js";
 import {Row} from "./components/row.js";
 import {Sidebar} from "./components/sidebar.js";
 import {Center} from "./components/center.js";
@@ -14,7 +13,7 @@ import {transformChild, transformRecursive, Utility} from "./utilities/utility.j
 import {AlignSelf} from "./utilities/align-self.js";
 import {BgImg} from "./utilities/bg-img.js";
 import {FlexBasis, FlexGrow, FlexShrink} from "./utilities/flex.js";
-import {H} from "./utilities/h.js";
+import {H, MaxH, MinH} from "./utilities/h.js";
 import {HideOver, HideUnder} from "./utilities/hide.js";
 import {LineHeight} from "./utilities/line-height.js";
 import {P, Pb, Pl, Pr, Pt, Px, Py} from "./utilities/p.js";
@@ -31,6 +30,7 @@ import { Overflow, OverflowX, OverflowY } from "./utilities/overflow.js";
 import { TextAlign } from "./utilities/text-align.js";
 import { Col } from "./components/col.js";
 import { Middle } from "./components/middle.js";
+import { RowOrCol } from "./components/row-or-col.js";
 
 
 
@@ -50,10 +50,11 @@ const componentMap: Record<string, new (...args: any[]) => any> = {
     "extender-l": Extender,
     "grid-l": Grid,
     "middle-l": Middle,
-    "rack-l": Rack,
     "sidebar-l": Sidebar,
     "switcher-l": Switcher,
     "row-l": Row,
+    "row-col-l": RowOrCol,
+    "col-row-l": RowOrCol,
     "stack-l": Stack,
     "slider-l": Slider,
 };
@@ -65,6 +66,8 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
     "flex-basis": FlexBasis,
     "flex-shrink": FlexShrink,
     "h": H,
+    "min-h": MinH,
+    "max-h": MaxH,
     "hide-over": HideOver,
     "hide-under": HideUnder,
     "line-height": LineHeight,
@@ -104,6 +107,9 @@ const utilityMap: Record<string, new (...args: any[]) => any> = {
 export function createComponent(tagName: string, layoutClasses: string[]): Component | undefined {
     const Cls = componentMap[tagName];
     if (!Cls) return undefined;
+    if(Cls === RowOrCol){
+        return new Cls(layoutClasses, tagName);//For RowOrCol we need the tagName for the selectors
+    }
     return new Cls(layoutClasses);
 }
 
